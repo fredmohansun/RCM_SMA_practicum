@@ -1,0 +1,10 @@
+SimpleSentimentStrategy is a sample strategy for trading off of Social Market Analytics's sentiment data.
+
+It requires access to SMA's data feed or historical data to run. The strategy takes a list of symbols, and looks to establish long or short positions
+based on the depth and strength of the social sentiment data, exposing thresholds for minimum volume and buzz in the sentiment data.
+
+The strategy also contains examples for using bounds constraints on parameter values, and for how to leverage build-in order stats tracking to assist 
+order management logic. It also has a simple example for how to implement an optional 'liquidate before the close' behavior.
+
+WARNING: The Strategy Studio example strategies are for documentation purposes only. They are not intended to produce profits
+and should not be used for production trading

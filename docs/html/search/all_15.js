@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['zscore',['ZScore',['../d3/de3/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_scalar_rolling_window.html#ab5395321f01eb4ecb0fafb3aaf056f65',1,'LimeBrokerage::StrategyStudio::Analytics::ScalarRollingWindow::ZScore() const '],['../d3/de3/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_scalar_rolling_window.html#aac31a3e8dfec3af6c7aeec960f792700',1,'LimeBrokerage::StrategyStudio::Analytics::ScalarRollingWindow::ZScore(size_type index) const '],['../de/d40/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_v_w_a_p.html#a29dbd25e19ff64efae3eea2b08fa87d5',1,'LimeBrokerage::StrategyStudio::Analytics::VWAP::ZScore()'],['../de/d40/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_v_w_a_p.html#a21001d4dc4b123f021c6c0a6a053460b',1,'LimeBrokerage::StrategyStudio::Analytics::VWAP::ZScore(double p)']]]
+];

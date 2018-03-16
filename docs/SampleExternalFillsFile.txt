@@ -1,0 +1,3 @@
+#ServerName,InstanceName,Symbol,Side,Quantity,Price,MarketCenter[,ApplyFees(true/false)]
+LiveSimServer1,GS_MS,GS,BUY,200,127.56,BATS
+LiveSimServer1,GS_MS,MS,SELL,200,128.12,NYSE,false

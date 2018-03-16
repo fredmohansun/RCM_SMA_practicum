@@ -1,0 +1,10 @@
+SimpleNewsStrategy is a sample strategy for trading off of Selerity's corporate news events.
+
+It requires access to Selerity's data feed to run. The strategy takes parameters a financial measure, 
+such as earnings per share ("FIN.EPS"), the expected value of the measure, the standard deviation of the 
+estimate, and the number of standard deviations (z-score) the actual release must be from normal before entering a 
+trade. If the actual news number is above this threshold it will buy and hold for a prespecified time interval 
+(specified in seconds), or sell if the number is below the threshold.
+
+WARNING: The Strategy Studio example strategies are for documentation purposes only. They are not intended to produce profits
+and should not be used for production trading

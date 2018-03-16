@@ -1,0 +1,1434 @@
+VERSION 2.18.0.0
+
+------------------------------------------------------------------------------
+10/9/2017: Version 2.18.0.0 Release Notes
+
+NEW EXECUTION HANDLER: Adds an execution handler to Sterling
+
+NEW EXECUTION HANDLER: Adds an execution handler to BAML
+
+ENHANCEMENT: Adds portfolio_notional pre-trade risk constraint; see documentation in Strategy Studio Inline Risk PDF for more information
+
+ENHANCEMENT: Adds new fields to FillInfo
+
+    New fields include: liquidity_code (normalized liquidity code as sent by execution provider), raw_liquidity (market liquidity code), exec_id, transaction_type (fill, bust, correction)
+
+ENHANCEMENT: Prevents starting the server multiple times concurrently from the same directory
+
+ENHANCEMENT: License file path is now configurable
+
+    In main server config file, add: LICENSE_FILE=<path to config file>
+
+ENHANCEMENT: Updates MarketCenter coverage to include several additional US market makers, Canadian equity markets, and futures exchanges
+
+ENHANCEMENT: FIX engine can now handle timestamps in micro and nano second resolution
+
+ENHANCEMENT: In Nanex backtest adapter, adds support for stop time by adding NANEX_STOP_TIME to backtester_config.txt
+
+ENHANCEMENT: In CMEAdapter, reduces logging on depth messages
+
+ENHANCEMENT: In NomuraExecutionHandler, allows non-standard string values in tag LiquidityInd (851)
+
+ENHANCEMENT: In KDBAdapter, no longer strips '/' prefix from futures symbols
+
+ENHANCEMENT: In Strategy Manager, improves the interface of the Import Strategy Instances and Manage External Fill dialogs
+
+    Parsing errors and warnings from import are easier to identify and correct
+    Records may be edited in-line or added directly
+
+BUG FIX: In Backtest server, fixes a server crash that can occur when external fills are entered against non-running instances
+
+BUG FIX: External Fills will no longer accept zero-size fills
+
+BUG FIX: In TextTickReader, fixes a problem where FeedType wasn't being parsed correctly
+
+BUG FIX: In Strategy Manager, fixes a crash when opening the New Backtest dialog on aggregate nodes of strategy tree
+
+BUG FIX: In Strategy Manager, disallows connecting to multiple servers configured with the same SERVER_NAME
+
+BUG FIX: In Strategy Manager, Read-only mode will no longer disable Server Connections dialog
+
+BUG FIX: In Strategy Manager, fixes parsing issue with custom_params for manual Replaces
+
+BUG FIX: In Strategy Manager, fixes the display of certain hierarchical Strategy Params
+
+BUG FIX: In Strategy Manager, fixes some minor interface issues with floating point parameters (previously, certain changes were not registered until clicking out of a modified field)
+
+------------------------------------------------------------------------------
+4/1/2017: Version 2.17.0.1 Release Notes
+
+ENHANCEMENT: Updates Nanex market center and trade condition mappings, and adds *.nx2 and *.nx3 to recognized set of tape file extensions
+
+------------------------------------------------------------------------------
+3/28/2017: Version 2.17.0.0 Release Notes
+
+NEW FEATURE: Adds a new OptionsAnalytics event message and adds state accessors for greeks and vols to Options
+
+NEW BACKTEST READER: Adds a new backtest adapter to Nanex
+
+NEW DATA ADAPTER: Adds a live adapter to Nanex's L1 and L2 feeds
+
+NEW EXECUTION HANDLER: Adds an execution handler to TT's FIX Adapter gateway
+
+ENHANCEMENT: Improves the efficiency and latency profiles of execution path for all ExecutionHandlers
+
+ENHANCEMENT: In LimeAdapter, adds support for the CME and OAE Citrius sources
+
+ENHANCEMENT: Updates NomuraExecutionHandler to support Instinet's CORE gateway
+
+ENHANCEMENT: In SprywareAdapter, adds the ability to override MIS.xml per asset class for TradeStats initialization
+
+	SPRYWARE_{EQUITY|OPTIONS|FUTURES}_TRADE_STATS_CONFIG=host[:user[:password]]
+
+ENHANCEMENT: In SprywareAdapter, accommodates new NYSE imbalance format
+
+ENHANCEMENT: Param name is now sent with all log statements on CreateParam error
+
+ENHANCEMENT: SDK's DataTypes.h now brings all MarketCenterID enum values into the LimeBrokerage::StrategyStudio namespace
+
+ENHANCEMENT: In Risk layer, adds a configuration setting to enable ETB constraint enforcement even if symbols file doesn't exist
+
+	ETB_RISK_REJECT_IF_NO_SYMBOLS_FILE={TRUE|FALSE}
+	Defaults to false
+
+ENHANCEMENT: Improves the behavior of <TAB> across the Strategy Manager
+
+ENHANCEMENT: Tooltips may now display even for disabled buttons in Strategy Manager
+
+ENHANCEMENT: In Strategy Manager's Messages grid, adds Server Name field
+
+ENHANCEMENT: Adds a 'Less Than' field to Strategy Manager's TickSizeRegime Manager for clarity
+
+BUG FIX: Fixes cases where param values can become inconsistent between GUI and server
+
+BUG FIX: Fixes a server crash when reloading Strategy DLLs after an instance has been terminated
+
+BUG FIX: In Strategy Manager's Market Center Fees dialog, fixes a crash if an update arrives while a local edit is in progress
+
+BUG FIX: In Strategy Manager, fixes a crash on deleting Start/End Times in graph options
+
+BUG FIX: In Strategy Manager's Instrument Manager dialog, the search function is now available when filters are applied
+
+BUG FIX: In Strategy Manager, improves all dialogs and the Strategy Instance tree to better handle live updates to server connections
+
+BUG FIX: In Strategy Manager, improves how TickSizeRegime and Multiplier are displayed for instruments not in the reference database
+
+BUG FIX: In KDBAdapter, fixes an issue when running a combined equity/futures query
+
+------------------------------------------------------------------------------
+12/14/2016: Version 2.16.0.2 Release Notes
+
+BUG FIX: In Strategy Manager's Staged Order grid when restoring records after a restart, fixes a bug recovering the correct Server Name if the set of connected servers has changed
+
+------------------------------------------------------------------------------
+12/1/2016: Version 2.16.0.1 Release Notes
+
+BUG FIX: In Strategy Manager's Staged Order grid, corrects the processing of certain fields when importing staged orders from file
+
+BUG FIX: In Strategy Manager, fixes a crash on submitting an order with a blank price
+
+BUG FIX: In Strategy Manager's TickSize Regime Manager, fixes some minor issues when modifying records
+
+------------------------------------------------------------------------------
+11/30/2016: Version 2.16.0.0 Release Notes
+
+NEW FEATURE: Adds an Order Staging grid to save orders for quick submission later
+
+	An order can be staged from the Order Entry dialog by clicking the Stage button
+	Staged orders are viewable from Staged Order grid (Trading -> Staged Orders) where entries can be edited and submitted individually or as a batch
+	Entries can be exported and imported to/from file
+
+ENHANCEMENT: Adds a new strategy callback OnIndex that delivers an IndexEventMsg with estimated fair value pricing for an Index or ETP
+
+ENHANCEMENT: In Strategy Manager's Instrument Browser and Instrument Manager, sort and filter performance is improved
+
+BUG FIX: Fixes a freeze in Strategy Manager when editing a Tick Size Regime after a server's connection status has changed
+
+------------------------------------------------------------------------------
+11/11/2016: Version 2.15.0.0 Release Notes
+
+NEW FEATURE: Adds support for complex tick size regimes and enables live instrument reference data adjustments from Strategy Manager
+
+	An instrument's tick size regime and multiplier can be updated from Strategy Manager via Instrument Manager, and tick size regimes can be managed via TickSize Regime Manager, both available from the Tools menu
+	Instrument now has a min_tick_size(double price) member that returns the tick size based on the passed price
+	Note that after upgrading to 2.15, the latest reference database populators must be used due to database changes
+
+API REVISION: Adds a new strategy callback OnWorkup that takes a WorkupEventMsg to communicate changes in fixed income workup state
+
+NEW ENVIRONMENT: Adds support for Windows Visual Studio 2015
+
+NEW DATA ADAPTER: Adds a live adapter to Interactive Data's consolidated market data feed
+
+NEW DATA ADAPTER: Adds a live adapter to BrokerTec's fixed price level Treasury feed
+
+NEW UTILITY: Adds a new TextReferenceDBPopulator that facilitates export and import of reference data to and from CSV files
+
+SDK LIBRARY UPDATE: Upgrades boost to version 1.61
+
+ENHANCEMENT: In LimeAdapter and OneTick Backtest Reader, adds automatic symbology normalization for Citrius data sources. Market data registration can be made in any of the source feeds' suffix conventions and will be automatically adjusted when querying/subscribing each specific enabled data source.
+
+ENHANCEMENT: Makes configuration problems fatal for all execution handlers
+
+	This will prevent a server from coming up if a crucial execution handler config file or setting is missing
+
+ENHANCEMENT: In LimeCPPExecutionHandler, updates support for LimeTradingApi to version 1.64
+
+	Adds support for several new algo fields including SweepType
+
+ENHANCEMENT: In LimeAdapter, updates to Citrius API v2.2.8 and adds handling for new feeds ARCI, BTSA, and IEX
+
+ENHANCEMENT: Adds a Closure field to the Orders grid and automatically populates with the trader for manual orders
+
+ENHANCEMENT: In SprywareAdapter, adds handling for new REGULATORY_IMBALANCE_INDICATOR field
+
+ENHANCEMENT: In KDBAdapter, adds handling for the NYSE regulatory imbalance flag, combined equity and futures queries, and for larger symbol lists
+
+ENHANCEMENT: In LimeAdapter and OneTickAdapter, adds handling for AMEX regulatory imbalance flag
+
+ENHANCEMENT: In Strategy Manager, removes the acknowledgement dialog after submitting a manual order
+
+ENHANCEMENT: For orders stuck in a pending state when an instance is stopped, automatically reattempts to cancel once the pending state is resolved
+
+REVISION: In Windows, SprywareReferenceDBPopulator now dynamically links against Spryware libs and must be run from a directory containing bin/spryware
+
+DEFECT: In SendExternalFillToStrategy, makes applyFees parameter added in v2.14 default to true to match the behavior in v2.13
+
+BUG FIX: Fixes an issue in strategy result files where external fills could be dropped if entered against an instance that didn't run prior to server shutdown
+
+BUG FIX: In Strategy Manager, fixes issue introduced in 2.14 where manual processor assignment selection was not correctly propagating to the server
+
+BUG FIX: Fixes a crash that can occur when an invalid strategy name is passed to the external_fill command at the command line
+
+BUG FIX: In Strategy Manager, fixes a GUI freeze when an instance is created with the same name as an existing instance
+
+BUG FIX: In Strategy Manager, fixes an occasional crash when Filter Time of Day is enabled
+
+BUG FIX: In Strategy Manager when exporting Daily Performance data from multi-date result files, start of day equity was applied multiple times and a single day could be repeated
+
+BUG FIX: In Strategy Manager, timestamps in Custom Strategy Graphs were not correctly localized
+
+BUG FIX: In Strategy Manager, disallows selecting previous dates in Historical Positions view and clears the grid following an instance reset
+
+------------------------------------------------------------------------------
+5/24/2016: Version 2.14.0.0 Release Notes
+
+ENHANCEMENT: Adds RegisterForFutures to StrategyEventRegister to enable batch futures registration
+
+ENHANCEMENT: Adds a flag to external fill processing to skip fees; fees are applied by default
+
+	The external_fill command now takes an optional [-apply_fees <bool>] argument
+	The Strategy Manager's file format now accepts an optional boolean ApplyFees field at the end
+
+ENHANCEMENT: Updates LimeCPPExecutionHandler to route unattributed fills to a configured strategy
+
+	lime_cpp_execution.config accepts AttributeExternalOrdersTo which configures the default instance to handle unattributed fills
+	Fills can be routed to a specific instance by populating the instance name in tag 9050 ('client order data' in Portal's Order Entry window)
+
+ENHANCEMENT: In Lime execution handlers, disables AutoMarkSide by default
+
+	Previously, AutoMarkSide was enabled if it was not specified in the config file
+
+ENHANCEMENT: In LimeCPPExecutionHandler, updates support for LimeTradingApi to version 1.58.2
+
+	Adds support for MinimumTriggerVol on equity orders and for SaleAffirm on algo orders
+
+ENHANCEMENT: In TickDataDotComAdapter, adds support for CME futures quote and trade files
+
+ENHANCEMENT: Updates the CMEiLinkExecutionHandler's audit files to support the latest audit spec
+
+ENHANCEMENT: In OneTickAdapter, historical CME handling now includes implied ticks
+
+ENHANCEMENT: Makes ENABLE_DYNAMIC_SUBSCRIPTION enabled by default
+
+	With this mode enabled, external fills and orders for unsubscribed symbols trigger an automatic subscription
+	It is also safe to cache StrategyEventRegister* and subscribe outside of RegisterForStrategyEvents, but note that this is not possible in Backtesting servers
+
+BUG FIX: Corrects a typo in ENABLE_DYNAMIC_SUBSCRIPTION
+
+BUG FIX: In Live servers with ENABLE_RECOVERY=true, eliminates duplicated messages in the serialized message store that occur with each server restart after one or more instances are reset
+
+BUG FIX: Fixes a crash that can occur when an invalid strategy name is passed to the reset command at the command line
+
+BUG FIX: In StrategyHTMLPublisher, fixes a startup crash and an output bug that caused all log messages to print to a single line
+
+BUG FIX: In Strategy Manager, corrects a localization issue in the Filter Time of Day settings for the Performance Graph
+
+BUG FIX: In Strategy Manager, fixes a problem with several of the pre-defined filters in the data grids (e.g., "Top 10", "Bottom 10", etc.)
+
+BUG FIX: Strategy Manager's Add Strategy Instance dialog now displays the correct Processor choices for manual assignment when the server selection is changed
+
+------------------------------------------------------------------------------
+3/17/2016: Version 2.13.0.0 Release Notes
+
+NEW DATA ADAPTER: Adds a live adapter to SR Labs normalized market data feed handlers
+
+	Currently Linux only
+	Tested against CME and US equities depth and consolidated
+
+ENHANCEMENT: Adds the ability to configure Daily PnL behavior
+
+	EOD_MARKING_TIME sets the daily sample time
+	EOD_MARKING_MODE sets the end of day marking mode; can be any of the regular marking modes or MARK_TO_CLOSE to mark to official closing prints
+	Please see the Getting Started guide for full details			
+
+ENHANCEMENT: Adds is_implied() to DepthUpdate to identify CME implied book updates
+
+ENHANCEMENT: In CMEReferenceDBPopulator, the channels to query must now be specified in the main server config file variable CME_CHANNELS
+
+ENHANCEMENT: In KdbAdapter, expands imbalance handling to include Nasdaq and Arca
+
+ENHANCEMENT: Strategy Manager now accepts external fills with negative prices
+
+ENHANCEMENT: In Strategy Manager, removes the time component from the Results Grid's Start and End Date columns
+
+ENHANCEMENT: In Strategy Manager, removes duplicate nodes from Daily Performance Data export
+
+BUG FIX: In Windows servers, corrects the handling of LOGS_DAYS_TO_KEEP (previously the archive window wasn't respected)
+
+BUG FIX: In Strategy Manager with Filter Time of Day enabled, fixes a rare crash that can occur when an unexpected time is received
+
+------------------------------------------------------------------------------
+2/1/2016: Version 2.12.1.0 Release Notes
+
+BUG FIX: Fixes time zone localization error in Strategy Manager's Custom Graph time axis introduced in 2.12
+
+ENHANCEMENT: Improved data chunking in kdb backtest adapter queries
+
+------------------------------------------------------------------------------
+1/21/2016: Version 2.12.0.0 Release Notes
+
+API REVISION: Updates and expands MarketCenterID enum
+
+	Adds SIP participant code handling for upcoming exchange status IEX US equity market center
+	New derivatives, fixed income, ASEAN equity market center IDs
+
+API REVISION: Updates TradeCondition enum and Trade classification handling for US Equity SIP sale conditions 'Contingent Trade' and 'Qualified Contingent Trade'
+
+ENHANCEMENT: Updates SprywareAdapter to version 3.8.7.2 of Spryware MIS
+
+ENHANCEMENT: In CMEiLinkExecutionHandler, adds several improvements
+
+	 Optimizes the SendNewOrder path, improving order send time
+	 Allows multiple accounts to share a single iLink session
+	 Disables automatic compression of audit file to reduce the possibility for corruption
+
+BUG FIX: In CMEAdapter, corrects the timestamp assigned to PriceBandEventMsg
+
+BUG FIX: In Strategy Manager, fixes a rare crash that can occur when first data point from server creates invalid time values in graph's auto axis scaling
+
+------------------------------------------------------------------------------
+12/1/2015: Version 2.11.0.1 Release Notes
+
+BUG FIX: In CMEiLinkExecutionHandler, fix order entry crash caused by invalid instrument attributes pointer
+
+------------------------------------------------------------------------------
+11/20/2015: Version 2.11.0.0 Release Notes
+
+API REVISION: QuoteSide::IsValid() now checks only for non-zero size
+
+API REVISION: Replaces OrderStatistics with IOrderStatistics
+
+	No code changes required unless a reference was taken to orders().stats()
+
+NEW DATA ADAPTER: Adds a live adapter to Fundamental Interactions' depth of book equity data
+
+NEW DATA ADAPTER: Adds a live adapter to CME Globex's MDP fixed-level futures feed
+
+NEW EXECUTION HANDLER: Adds an execution handler to SpeedRoute's exchange gateway
+
+NEW EXECUTION HANDLER: Adds an execution handler to CME Globex's iLink Order Entry gateway
+
+NEW EXECUTION HANDLER: Adds an execution handler to Cunningham Trading Systems' T4 FIX API
+
+ENHANCEMENT: In SprywareAdapter, adds support for short sale restrictions
+
+ENHANCEMENT: Updates SprywareReferenceDBPopulator for changes to FutureFundamental following Spryware's switch to CME's MDP format
+
+ENHANCEMENT: Negative prices are now accepted for futures orders, and futures positions with negative prices will be marked correctly
+
+ENHANCEMENT: Increases the minimum supported price precision to 1e-7
+
+ENHANCEMENT: In Strategy Manager, allows configuration of audible fill alerts for Live Simulation and Production servers
+
+	To configure, open Tools -> System Settings and make the appropriate selections under the Fill Alerts section
+
+ENHANCEMENT: In Strategy Manager's Instrument Browser, improves the performance, filtering and search options and adds several displayable fields
+
+ENHANCEMENT: In Strategy Manager, the Order Entry dialog now updates the symbol's case to match an existing instrument if one exists
+
+BUG FIX: OrderStatistics didn't correctly update working_notional values following unsolicited price adjustments
+
+BUG FIX: In Strategy Manager, selecting certain timezones can cause the Backtest Start and End dates to advance by a day
+
+BUG FIX: In Strategy Manager, some orders escape removal from Orders grid when Order Timeout switched from NEVER to IMMEDIATELY
+
+BUG FIX: In Strategy Manager, corrects behavior when multiple servers have the same name
+
+BUG FIX: In Strategy Manager, fixes a deadlock that can occur during shutdown if currently in replay
+
+BUG FIX: In Strategy Manager, fixes rare crashes that can occur on selecting the Positions tab or submitting a manual order to a disconnected server
+
+------------------------------------------------------------------------------
+10/22/2015: Version 2.10.3.0 Release Notes
+
+BUG FIX: In LimeAdapter with LIME_ADAPTER_ENABLE_AUTO_FAILOVER=true, corrects a bug that can lead to a deadlock when a source disconnects
+
+------------------------------------------------------------------------------
+10/14/2015: Version 2.10.2.0 Release Notes
+
+BUG FIX: In Strategy Manager, fixes a bug where new position records sometimes fail to appear in Positions grid until the view is changed
+
+------------------------------------------------------------------------------
+9/11/2015: Version 2.10.1.0 Release Notes
+
+BUG FIX: With ENABLE_RECOVERY=true when restoring strategy records from a prior day, fixes an issue with symbology resolution when loading reference data
+
+------------------------------------------------------------------------------
+9/9/2015: Version 2.10.0.0 Release Notes
+
+API REVISION: Various changes to OrderParams to support new fields and remove support for deprecated fields
+
+	New members include allow_routing, locked_crossed_action, imbalance_only, wash_trade_prevention, and routing_instructions
+	These new fields will be processed by execution handlers and should be preferred to custom_params where possible
+	Eliminated deprecated member broker_specific_tags
+	Changed closure member type from void* to boost::any
+	Added serialization and recovery for boost::any members closure and custom_params if the contained types are std::string and std::pair<int, string>, respectively
+
+ENHANCEMENT: Adds ability to route orders to multiple execution handlers within a single server
+
+	Production servers can load multiple execution handlers by passing a comma delimited list to EXECUTION_HANDLER_MODE
+	Strategy Studio accounts are tied to an execution handler which can be configured from Strategy Manager's Admin -> Manage Accounts dialog
+	Upon upgrading to v2.10, all accounts will be mapped to the first execution handler in EXECUTION_HANDLER_MODE
+	By default, orders will be routed to the handler associated with the instance's configured account
+	A new overload of trade_actions()->SendNewOrder now takes an account string which can produce alternate order routing
+	Strategy Manager's Order Entry dialog allows an order's account to be specified under Additional Properties
+
+ENHANCEMENT: In LimeAdapter, adds automatic failover on source disconnect
+
+	To enable, set LIME_ADAPTER_ENABLE_AUTO_FAILOVER=true in main server config file
+	When enabled, a source disconnect will cause an automatic failover to the next configured ServerGroup
+	LIME_ADAPTER_LOGIN_RECONNECT no longer has any effect
+
+EXECUTION HANDLER RENAMING: Renames LimeInsideExecutionHandler to LimeCPPExecutionHandler
+
+	Config file renamed from lime_inside_execution.config to lime_cpp_execution.config
+	EXECUTION_HANDLER_MODE now expects LimeCPPExecutionHandler
+
+ENHANCEMENT: Updates support for LimeTradingApi to version 1.52
+
+	Adds support for new algo order fields
+
+ENHANCEMENT: In LimeCPPExecutionHandler, adds support for secondary TS3 server and automatic failover
+
+	An optional secondary TS3 host may be specified in lime_cpp_execution.config immediately after the primary host IP
+	Upon connection failure, the handler will automatically attempt to reconnect, alternating between primary and secondary, if available
+
+ENHANCEMENT: In Lime execution handlers, AllowRouting may now be set to 'None' in lime_route.config by leaving field empty or setting to None
+
+	In certain cases, AllowRouting is not expected on an order and its presence will trigger a reject; None should be used in these cases
+
+ENHANCEMENT: Adds an EntryTime field to Order to capture when the order was first created
+
+ENHANCEMENT: Updates SprywareAdapter to version 3.8.4.3 of Spryware MIS
+
+ENHANCEMENT: Updates ActivAdapter to version 2.1.0 of Activ SDK
+
+ENHANCEMENT: In SprywareAdapter, allows credentials to be overridden for each connection specification
+
+ENHANCEMENT: In KDBAdapter, adds support for futures
+
+ENHANCEMENT: In LimeAdapter and OneTickAdapter, adds handling for trade conditions in INET
+
+	Beginning 6/15/2015, Citrius began propagating certain trade conditions on their INET feed
+
+ENHANCEMENT: Fill Simulator now validates order price precision
+
+ENHANCEMENT: In Strategy Manager when loading results files, immediately removes orders from grid if any order timeout is set
+
+ENHANCEMENT: In Strategy Manager, adds date specific filter specifiers to date columns
+
+BUG FIX: Since v2.9.0, newly created instances' ProcessorIDs were permanently assigned even if not specified at creation
+
+	To reset all instances to automatic processor assignment, the assign_processor command now takes a '*' instance argument
+
+BUG FIX: In LimeCPPExecutionHandler, fixes a few bugs
+
+	Now passes limeReplaceOrderId instead of replaceOrderId for OrderTag to be more consistent with new orders
+	Updates busts handling to use the correct side
+
+BUG FIX: In TradesOnly simulations with WaitForNextTrade enabled, corrects fill price for marketable orders
+
+	Previously, the simulator filled market orders in this mode at the order price instead of the trade price
+
+BUG FIX: Adds ORDER_SIDE_SELL_SHORT_EXEMPT to IsSellSide convenience function
+
+BUG FIX: In Strategy Manager, corrects aggregate Day PnL when child nodes end on different days
+
+BUG FIX: In Strategy Manager, excludes debug log messages from log file when 'Enable Debug Logging' is unchecked.
+
+BUG FIX: In Strategy Manager following a reconnect, fixes a bug where under certain circumstances various actions fail to work at aggregate nodes
+
+BUG FIX: In Strategy Manager, fixes a bug where the performance graph can become incorrect at aggregate nodes after the removal of a child node
+
+BUG FIX: In Strategy Manager's Order History viewer, sets Entry Time for each order update to original Entry Time instead of that update's Last Mod Time
+
+BUG FIX: In Strategy Manager, corrects time zone handling in various places to match the selected time zone
+
+	The Historical Position Viewer's Date Time field was incorrectly being interpreted as local time
+	Date lists in DateTime column filters were incorrectly represented as local time
+
+BUG FIX: In Strategy Manager, corrects a bug where STOPPED strategies quit contributing to aggregate node graphs
+
+------------------------------------------------------------------------------
+8/10/2015: Version 2.9.4.0 Release Notes
+
+ENHANCEMENT: In OneTickAdapter, adjusts handling of CancelReplace events in INET database to be robust to a normalization change OneTick introduced in recent releases of Citrius collector
+
+------------------------------------------------------------------------------
+8/6/2015: Version 2.9.3.0 Release Notes
+
+BUG FIX: In Strategy Manager, fixes bug where under certain circumstances GUI can crash if custom Strategy Commands request an input box
+
+------------------------------------------------------------------------------
+7/23/2015: Version 2.9.2.0 Release Notes
+
+BUG FIX: In Strategy Manager, restores behavior where sort order within matching timestamps is preserved in the data grids
+
+------------------------------------------------------------------------------
+7/10/2015: Version 2.9.1.0 Release Notes
+
+BUG FIX: In Strategy Manager, restores behavior where day_pnl turns over at midnight rather than when sampled at close
+
+------------------------------------------------------------------------------
+6/8/2015: Version 2.9.0.0 Release Notes
+
+NEW EXECUTION HANDLER: Adds an ExecutionHandler to EZX's TPA interface
+
+ENHANCEMENT: Strategy Manager's Order Entry dialog now accepts custom params
+
+ENHANCEMENT: Adds support for parameter hierarchies to Strategy Manager
+
+	A parameter group is created when a / is present in the parameter name
+	Parameter groups are collapsible from the parameters grid, and are grouped and can be hidden from the Strategy Grid's Param Editor
+
+ENHANCEMENT: In Strategy Manager, a parameter rejection will produce an alert; this can be disabled from Tools -> System Settings
+
+ENHANCEMENT: In Strategy Manager and server command line, initial processor assignment can be set during instance creation
+
+ENHANCEMENT: Server log files now append within a day and archive across days
+
+	The log archive window can be configured using LOGS_DAYS_TO_KEEP in server config file
+
+ENHANCEMENT: In SprywareAdapter, adds handling for CrossType in TotalView channel
+
+ENHANCEMENT: Adds names to certain threads, viewable through Windows debuggers and Linux utilities
+
+REVISION: NomuraExecutionHandler no longer depends on echo-back tag for order mapping
+
+------------------------------------------------------------------------------
+4/16/2015: Version 2.8.0.0 Release Notes
+
+NEW DATA ADAPTER: Adds a live adapter to Hotspot's ITCH interface
+
+NEW EXECUTION HANDLER: Adds an execution handler to Hotspot's FIX 4.2 gateway
+
+NEW BACKTEST READER: Adds a new backtest adapter to Kx KDB
+
+ENHANCEMENT: In OneTickAdapter, adds support for EXCHANGE_TIME_NANOS field when present
+
+ENHANCEMENT: In OneTickAdapter when processing Imbalance ticks, adds support for PRICE_SCALE_FACTOR when present and improves handling when not
+
+ENHANCEMENT: Updated OneTickAdapter to build against BUILD_20150411001620
+
+ENHANCEMENT: In SprywareAdapter, adds a new SPRYWARE_CHANNEL syntax to support event type filters; see SprywareAdapter.pdf for more details
+
+ENHANCEMENT: Adds a reset command to the command line interfaces
+
+ENHANCEMENT: Adds configurable font size selection to the StrategyManager
+
+ENHANCEMENT: In StrategyServerProduction, increases internal server heartbeat frequency
+
+ENHANCEMENT: Adds a parameter change and strategy command history viewer to the StrategyManager
+
+	To view, select "Param & Command History" from the context menu of an instance or result node.
+
+ENHANCEMENT: Adds a configuration setting to control the adapter log level threshold
+
+	To override the default adapter log level, set ADAPTER_LOG_LEVEL=<NEW_LEVEL> in the main server config file, where <NEW_LEVEL> is INFO, WARN, etc.
+	
+------------------------------------------------------------------------------
+3/12/2015: Version 2.7.0.0 Release Notes
+
+ENHANCEMENT: Introduces new skins for Strategy Manager, including a choice of light and dark themes
+
+	To switch between light and dark themes, select View -> Theme.
+
+ENHANCEMENT: In OneTickAdapter and LimeAdapter, adds support for ARCT, NYST trade conditions
+
+ENHANCEMENT: In OneTickAdapter, enables queries on feeds with delay restrictions to include most recently entitled data by capping query end time
+
+	To enable, set ONE_TICK_DELAY_MINUTES=<MINUTES> in backtester_config.txt, where <MINUTES> is the delay time
+
+ENHANCEMENT: In LMAX live and backtest adapters, generate quote, rather than depth, event messages
+
+DEFECT: Corrects server executables to return 0 on successful completion
+
+------------------------------------------------------------------------------
+2/6/2015: Version 2.6.0.0 Release Notes
+
+NEW ENVIRONMENTS: Adds three newly supported environments - Windows Visual Studio 2013, Ubuntu 14.04, and Centos 7.0
+
+SDK LIBRARY UPDATE: Upgrades boost to version 1.57
+
+SDK LIBRARY UPDATE: Upgrades eigen to version 3.2.2
+
+ENHANCEMENT: LimeInsideExecutionHandler now supports algo orders
+
+ENHANCEMENT: With USE_TRADE_COND_FOR_AUCTION_SIM=true, accept auction orders until the official opening/closing print in each market
+
+ENHANCEMENT: Adds a notional column to the StrategyManager's position grid
+
+ENHANCEMENT: With ENABLE_RECOVERY=true, simplifies parameter replay to use only strategy_conf values prior to RegisterForStrategyEvents, rather than also looking at prior day's snapshot
+
+ENHANCEMENT: In Windows, disable the server's console close button to encourage proper shutdown via 'quit' command
+
+ENHANCEMENT: In SprywareAdapter, adds symbology translation and improved performance for initializing trade_stats
+
+BUG FIX: In StrategyManager, fixed decimal truncation when entering fractional simulator latency values
+
+------------------------------------------------------------------------------
+12/17/2014: Version 2.5.0.0 Release Notes
+
+ENHANCEMENT: OneTick back test adapter adds support for pulling Social Market Analytics 15min historical data from Lime DataVault
+
+	If credentialed for SMA data, simply add table 'SOCIAL' to ONE_TICK_TABLE_NAME list in backtester_config.txt and use
+	"eventRegister->RegisterForSentiment(symbol); " as in the live case.
+
+ENHANCEMENT: Adds SimpleSentimentStrategy to SDK's example strategies, to demonstrate use of SMA data
+
+ENHANCEMENT: Adds num_working_orders per instrument to order tracker
+
+ENHANCEMENT: Adds support for multiple processors to the live LMAXDataAdapter
+
+BUG FIX: In LMAX adapters, fixes bug where sub-pip quote price changes could fail to trigger OnTopQuote when quote size also unchanged
+
+BUG FIX: In StrategyManager, fixes bug where removing strategy parameters can cause a crash after a server restart with ENABLE_RECOVERY=true.
+
+------------------------------------------------------------------------------
+11/18/2014: Version 2.4.0.0 Release Notes
+
+API REVISION: ImbalanceEventMsg now handles NYSE Regulatory Imbalance via new AUCTION_TYPE_REGULATORY value in AuctionType enum
+
+NEW EXECUTION HANDLER: CQG FIX 4.2 Gateway
+
+	Adapter is currently certified for vanilla Futures orders
+
+ENHANCEMENT: Several SprywareAdapter enhancements
+
+	Adds normalization for CME Globex and OPRA instruments
+	New SprywareReferenceDBLoader also available on FTP site to load futures contract specs from Spryware's FutureFundamental table
+	Switches channel processing to derive from TickerTableMP rather than TickerTable
+
+ENHANCEMENT: Upgraded LimeAdapter to Citrius v2.2.2
+
+ENHANCEMENT: backtester_config.txt allows new variable "RESET_TO_RUNNING=true" to start each day of a backtest in running state, in the case pause/stop was triggered in a prior day.
+
+ENHANCEMENT: With OneTick backtest reader, if an exception is thrown in OneTick, experiment will stop and log an error rather than skipping to the next day
+
+------------------------------------------------------------------------------
+10/21/2014: Version 2.3.0.0 Release Notes
+
+NEW FEATURE: Add support for multi-currency portfolios				
+				
+	Main config variable HOME_CURRENCY=<ISO currency code>, defaulting to USD, controls the server's domestic currency			
+	The Strategy Manager's Tools -> System Settings dialog allows control over the Strategy Manager's home currency, which must match among all connected servers			
+	Static conversion rates can be set at a daily frequency			
+	When an FX data source is present, the server will automatically subscribe to the pairs needed to facilitate conversion of instruments denominated in a foreign currency			
+	Please see the Getting Started guide for full details			
+				
+NEW EXECUTION HANDLER: Adds production execution adapter for LMAX currency exchange				
+				
+NEW DATA ADAPTER: Adds market data adapter for LMAX currency quotes				
+				
+NEW DATA ADAPTER: Adds SMAFeedHandler, an adapter to Social Market Analytics' sentiment feed				
+				
+	Subscriptions are made through RegisterForSentiment, and callbacks come through OnSentiment			
+				
+NEW BACKTEST READER: Adds NomuraTickReader, including support for European equity exchanges LSE, Xetra, BATS Europe, and Arca Europe				
+				
+ENHANCEMENT: Improved memory utilization				
+				
+	Addressed heap fragmentation that could arise from calling 'export_cra' on large result files, improving performance of the result file export			
+	Lowered server memory consumption particularly when running many Strategy Instance variations in backtest experiments			
+				
+ENHANCEMENT: Updated Spryware adapter to version 3.7.10.2 of Spryware MIS				
+				
+	Adds support for Imbalance messages			
+	Initializes Instrument TradeStats			
+				
+ENHANCEMENT: Updated OneTick adapter to build against v1.12 of the OneTick libraries.				
+				
+ENHANCEMENT: Add configuration setting to automatically withdraw markets with crossed BBO from aggregate order book and top quote calculations				
+				
+	To enable, set WITHDRAW_CROSSED_BOOKS=true in main server config file		
+
+ENHANCEMENT: For TRADES_ONLY backtesting, added configuration setting to delay processing of marketable limit orders until the next trade tick
+
+	To enable, set WAIT_FOR_NEXT_TRADE to true in the main server config file	
+				
+ENHANCEMENT: Handlers for live and historical Lime Market Data now recognize ARCA as a source of trade ticks for the purpose of determining preferred feeds				
+				
+ENHANCEMENT: Order side and price are revised in OnOrderUpdate if revised values are provided by the broker				
+				
+ENHANCEMENT: RegisterForClosureEvent allows a NULL parentEvent				
+				
+ENHANCEMENT: Registering for bars on a dynamic subscription will now automatically register the strategy for market data				
+				
+ENHANCEMENT: Added Strategy Manager summary report statistics for Long and Short PnL summed across closed trade reports and open positions				
+				
+ENHANCEMENT: Added support for a BuyToCover tag in the BNPExecutionHandler				
+
+ENHANCEMENT: Adding Boost Serialization library binaries to SDK
+				
+BUG FIX: Corrected a case where the main server input loop reached a bad state				
+				
+BUG FIX: Corrected a bug where, under certain conditions, result files would fail to load to the Strategy Manager				
+
+------------------------------------------------------------------------------
+8/12/2014: Version 2.2.0.0 Release Notes
+
+ENHANCEMENT: Strategy can disable cancel all working orders on stop behavior by calling set_enabled_cancel_on_stop_flag(false)
+
+	Strategies that disable the built-in cancel feature should provide an alternate means to cancel all working orders.
+
+ENHANCEMENT: With ENABLE_RECOVERY=true, server will automatically discard outstanding overnight orders unless order TIF indicates overnight persistence is valid. 
+
+	Server will log the list of discarded orders.
+
+ENHANCEMENT: Update support for LimeInside to version 1.38
+
+BUG FIX: Update top_quote immediately after a manual modification to a Market Center's preferred quote feed
+
+------------------------------------------------------------------------------
+7/21/2014: Version 2.1.1.0 Release Notes
+
+BUG FIX: Fixed error correctly re-initializing OrderStatistics after server restart with ENABLE_RECOVERY=true.
+
+	Clients who rely on ENABLE_RECOVERY and orders().stats() are advised to upgrade and recompile strategies
+
+------------------------------------------------------------------------------
+6/18/2014: Version 2.1.0.2 Release Notes
+
+BUG FIX: Fix recoveryEnabled day-pnl bug introduced in v2.1
+
+------------------------------------------------------------------------------
+5/16/2014: Version 2.1.0.0 Release Notes
+
+NEW BACKTEST READER: Adds TextTickReader, a generic text file backtest adapter				
+
+	Primary purpose of the adapter is to facilitate automated strategy regression testing against pre-canned data scenarios involving common tick types.
+	Covers Trades, Quotes, Depth, and Imbalance
+	See SDK's docs/Adapters/TextTickReader.pdf for full information and file layout specification.
+
+NEW EXECUTION HANDLER: Adds an adapter to Nomura/Instinet NXT Connect FIX to the standard production server packages
+
+NEW EXECUTION HANDLER: Adds an adapter to BNP Paribas FIBEX FIX to the standard production server packages
+
+ENHANCEMENT: LimeInside (aka Lime C++ Trading API) execution handler now included in Ubuntu and Windows packages
+
+ENHANCEMENT: Several server performance enhancements
+
+	Expanded use of pooled memory in order book objects
+	Serialization optimizations in execution handlers
+
+ENHANCEMENT: Better interface for Strategy Manager's Market Center Fees dialog
+
+ENHANCEMENT: Strategy Manager data grids compute summary rows within groups
+
+ENHANCEMENT: Made Strategy Manager data grid header row's active filter graphic easier to see
+
+BUG FIX: Changes to signal handling to make server more reliably recognize 'nohup' from linux command line
+
+------------------------------------------------------------------------------
+5/1/2014: Version 2.0.1.0 Release Notes
+
+REVISION: Revises behaviour for Fill Simulator's USE_TRADE_COND_FOR_AUCTION_SIM=true mode								
+
+	Simulator will look at both market center and opening print trade conditions to match auction orders
+
+------------------------------------------------------------------------------
+4/24/2014: Version 2.0.0.0 Release Notes
+
+MAJOR STRATEGY MANAGER RELEASE: New version of Strategy Manager, featuring several enhancements:								
+								
+	Strategy data panels are now all dockable/floatable, with layout memory between runs of the GUI							
+	All data grids support flexible filtering, sorting, grouping; copy-paste to excel							
+	Strategy Tree now has a search bar							
+	Right click from Strategy Grid to navigate to node in Strategy Tree							
+	New Params grid added to the Strategy Grid dialog. This is for batch spreadsheet style editing/viewing of params by strategy type.						
+	GUI display timezone can be configured via Tools->System Settings							
+	Working order count added to summary report and as a column in strategy grid view							
+	Orders grid timeout can be set to 'Immediate'. 'N Minutes' is now interpreted as 'periodically find and remove orders that expired more than N minutes ago'							
+	Tools->System Settings adds setting for a maximum number of log messages to keep in the GUI							
+	Improved CPU and memory utilization under heavier loads							
+								
+NEW FEATURE: Added ability to mix-and-match quotes and order books as contributor to the aggregate_order_book, with configurable (per MarketCenterID) preferred quote and trade sources								
+								
+	Allows more customizable behaviour when server subscribes to both consolidated feeds and some depth or  direct-BBO/trade feeds.							
+	PREFERRED_QUOTE_SOURCE determines what type of feed should contribute to the aggregate_order_book and top_quote							
+	PREFERRED_TRADE_SOURCE determines what type of feed should be used to update bars,  instrument.last_trade() and instrument.trade_stats()							
+	By default, server will now use the best available feed type per market center as the preferred source, based on adapter configuration							
+	Users can override these defaults by populating a "preferred_feeds.csv" file							
+		Format is MARKET_CENTER_ID,PREFERRED_QUOTE_SOURCE,PREFERRED_TRADE_SOURCE						
+		Valid source type specifiers are: BEST, CONSOLIDATED, DIRECT, DEPTH, NONE						
+		Example entry for subscribers to NYSE OpenBook Ultra (Depth), and NYSE Trades (Direct trades):						
+			NYSE,DEPTH,DIRECT					
+	In the event of a live data problem with the active preferred feed type, server supports hot swapping a different feed type via command line:							
+		set_preferred_feed_type <market_center> <quote_feed_type> <trade_feed_type>						
+		For live configuration changes, supported values are DEPTH,DIRECT,CONSOLIDATED,NONE						
+	Strategies can check programmatically  the current contributor to the aggregate_order_book by checking for example							
+		instrument->markets()[MARKET_CENTER_ID_NYSE].preferred_quote_source()						
+								
+	Removes older functions instrument->markets().AggrQuote* that seperately tracked aggregated L1 BBO quote volumes for consolidated-only configurations							
+								
+	Deprecates USE_DEPTH_QUERY config file variable formerly used by some backtest readers							
+								
+NEW FEATURE: Adds instrument state tracking for daily trade statistics								
+								
+	instrument->trade_stats() exposes accessors for prior day's close (& close date), most recent open price, day's volume, day high and low.							
+	Server endeavors to initialize these stats upon connecting to a live data source, though our ability to do this robustly can vary by data adapter							
+	Server increments/updates high,low,volume from the incoming trade ticks of the PREFERRED_TRADE_SOURCE							
+	Server updates open/close based on the trade tick's trade conditions; these stats will usually only be available from US Consolidated data feeds							
+								
+API REVISION: Portfolio tracker's GetRecord() function now returns an IPositionRecord* instead of PositionRecordBase*, exposing a cleaner interface								
+								
+ENHANCEMENT: Adds config option to have FillSimulator process MOO/LOO/MOC/LOC based on official auction cross prints rather than first trade after open and last trade before close								
+								
+	To enable, set USE_TRADE_COND_FOR_AUCTION_SIM=true in server's config file							
+		This is only recommended for clients who subscribe to SIAC+UTP						
+		If tick data source doesn’t provide sufficient trade conditions to identify the open/close crosses, auction orders will remain open until end of day						
+								
+ENHANCEMENT: In ActivAdapter, added support for automatic resubscription after a connection break								
+								
+	To enable, set ACTIV_RESUBSCRIBE_ON_RECONNECT=true in server config file		
+
+ENHANCEMENT: Updates to version 2.2.0 of Citrius in LimeAdapter											
+
+------------------------------------------------------------------------------
+4/04/2014: Version 1.10.0.0 Release Notes		
+
+ENHANCEMENT: Reduced memory consumption for Back Test servers		
+		
+	Fill simulator and strategy result store flush data more frequently	
+	New optional configuration variable to limit the scope of OrderTracker's memory	
+		New setting in main server configuration file that disables tracking of completed orders. If DELETE_COMPLETED_ORDERS=true, orders will be untracked and deleted after the call to OnOrderUpdate if msg.completes_order() returns true. 
+		Not recommended for Production servers. Default is false, in which case orders().tracked_orders will rememer all completed orders for the current trading day, as before.
+		
+ENHANCEMENT: Added server config variables to control threshold for log file output for the Processor and Network loggers.		
+	PROCESSOR_LOG_LEVEL and NETWORK_LOG_LEVEL both now default to LogLevel INFO. Accepted values for these settings are: DEBUG, INFO, WARN, ERROR, FATAL	
+		
+ENHANCEMENT: Streamlined internal serialization for execution handler with RECOVERY_MODE enabled, deprecating the server's execution_handler_pstore files.		
+		
+API REVISION: Added several MarketCenterID enums for a few FX data sources/venues: FX_ALL, LMAX, OTC		
+		
+BUG FIX:	Fixed a couple strategy command line bugs introduced in v1.9's revisions: A case sensitivity issue in the start|... command, and a documentation typo in the help output for start_backtest	
+
+------------------------------------------------------------------------------
+2/14/2014: Version 1.9.1.0 Release Notes							
+							
+BUG FIX: Backtest servers weren't releasing all log file handles at end of experiments							
+							
+ENHANCEMENT: Added ability to set account fees and simulator parameters via command line							
+	New commands are: set_default_fees, update_strategy_fees, set_simulator_params						
+
+-------------------------------------------------------------------------------
+2/3/2014: Version 1.9.0.0 Release Notes		
+
+ENHANCEMENT: Streamlined command line syntax and improvements to ServerCommandLine utility			
+			
+	Better delimiter consistency, more uniform support for using double quotes to escape delimiters in parameter strings		
+	More flexible scoping for strategy param and control commands, allowing filtering on trader, account, and group		
+	Added ability to terminate instances from command line		
+	Added ability to trigger a custom StrategyCommand from command line		
+	StrategyCommandLine utility's executable will now exit with standardized return values when used in File or Single Command mode		
+	All modes of the StrategyCommandLine utility now default to process individual commands syncronously, unless a new optional TIMEOUT config variable is set		
+	See GettingStarted.pdf for full information		
+			
+NEW ADAPTER: New feedhandler adapter for Activ Financial			
+			
+	Initial release handles trades and quotes from SIAC, UTP, OPRA, and LSE. Additional content coverage in development		
+	New ActivReferenceDBPopulator utility, available on Utilities folder of FTP site, can be used to import US Options and LSE instrument/contract specs		
+	See SDK's docs/adapters/ActivAdapter.pdf for more information		
+			
+NEW FEATURE: Added support for a holiday/half day file			
+			
+	Backtester will skip querying data on days labeled as full holidays		
+	Half day file's adjusted open/close times will override server default times for firing strategy's OnMarketState 		
+	Half day file's adjusted open/close times will be reflected in MarketModels/MarketCenterHours.h's USEquityOpenUTCTime() etc		
+	Holiday file should be placed in server executable's directory; an example file is located in SDK's docs folder		
+			
+NEW FEATURE: Added ability to configure server's default PREOPEN/OPEN/CLOSE timestamps			
+			
+	Server's main config file allows the following variables to be set to control when Strategy's OnMarketState fires by default:		
+		PRE_OPEN_MARKET_TIME=4:00	
+		OPEN_MARKET_TIME=9:30	
+		CLOSE_MARKET_TIME=16:00	
+			
+	Times are interpreted as being in EST time zone by default. This may be changed by one of two new config file options:		
+		TIME_ZONE=PST-8PDT,M3.2.0,M11.1.0	
+			This must be specified in POSIX time zone format
+			
+		-or-	
+		
+		TIME_ZONE_REGION=America/Los_Angeles	
+			The value must be a region ID from a boost::date_time timezone database file, an example of which has been added to SDK's docs folder
+		TIME_ZONE_DB_FILE=path	
+			Specifies location of the boost timezone database file, defaults to ./date_time_zonespec.csv
+			
+	Changing OPEN_MARKET_TIME will also flow through to Time Bar's default alignment time.		
+			
+NEW FEATURE: Added ability to manually specify alignment time for TimeBars in RegisterForBars			
+	As before, when not specified, default alignment time is current day's open time		
+			
+NEW FEATURE: Added new bar type, BAR_TYPE_RANGE			
+	Similar to VARIANCE bar, but triggers off the high-low interval size of the trade prices in the bar		
+	When price gaps, high-low = multiplier*interval size +  remainder, and any remainder from a gap will carry forward to adjust the next period's high or low		
+			
+ENHANCEMENT: Added ability to filter AdjustedContracts when using eventRegister->RegisterForOptions()			
+			
+ENHANCMENT: Improved handling for US Option mini contracts in absence of reference data			
+	If Strategy Studio doesn't have access to reference data, it looks for option roots that end in '7' and changes default units and multiplier to 10		
+	In LimeReferenceDBPopulator, adds same rule to imported reference database entries, to compensate for multiplier/units not being available from Citrius		
+			
+API REVISION: Expanded MarketCenterID enum for newer options exchanges, equity ATS's and select initial international markets			
+	Also updated TradeCondition enum for US consolidated equity feed ODD_LOT and CORRECTED_CONSOLIDATED_CLOSE sale conditions, and LSE trade types		
+			
+ENHANCEMENT: Refactored out a mutex acquisition from RegisterForScheduledEvent to improve performance of high volume single scheduled event registrations			
+			
+ENHANCEMENT: In OneTick adapter, added handling for Citrius PRL tick 'ORIGIN' field, allowing us to process cancel-replaces as a single tick			
+			
+BUG FIX:	Fixed a localization formatting bug in the Strategy Manager's New Backtest Start/End Date inputs, and broadly improved localization of displayed date formats		
+			
+BUG FIX: Order book PriceLevelEnumerator didn't initialize gracefully when instantiated from an empty book			
+
+-------------------------------------------------------------------------------
+10/17/2013: Version 1.8.0.0 Release Notes										
+										
+NEW FEATURE: Adds support for hot Citrius source server group failover in LimeAdapter										
+										
+	New alternative XML spec for configuring Citrius connections allows specifying multiple server groups									
+	Feature also requires LIME_ADAPTER_LOGIN_RECONNECT=true to be set in the server's main configuration file									
+	New server command line instruction "citrius_failover <citrius_source>,<new_server_group>" to initiate failover									
+	If failover is started on an order book feed, source market center's book will clear, and updates will start to arrive from newly connected Citrius server									
+		New order_book() and aggregate_order_book() accessor "is_initializing" can be used to avoid trading off of incomplete order book state while it's being repopulated from the failover server								
+		New OnDepth message depth_update_types to flag the start and end of the initialization process.								
+	See docs/adapters/LimeAdapter.pdf for more information									
+										
+ENHANCEMENT: Updates to version 2.1.9 of Citrius in LimeAdapter										
+										
+	Adds support for Citrius Turbo's new isExpress login variable, updated lime_source_config.txt entry format is:									
+	#FORMAT SHOULD BE: "HOST:PORT,SOURCE_ID,USER,PASSWORD[,TOP_OF_BOOK=false,TRADES_ONLY=false,IS_EXPRESS=false]"	
+	
+	Improves normalization of NSDQ and PHLX options sources -- adds more information on OnDepth update's reason_for_change for NSDQ and treats PHLX BBO quotes as one level deep order book entries, since PHLO was discontinued
+										
+NEW ADAPTER: New plain text corporate actions loader available for loading splits, dividends, spinoffs, and symbol changes from ASCII flat files										
+										
+	See docs/adapters/TextCorporateActionAdapter.pdf for more information									
+										
+NEW FEATURE: Adds SendExternalFillToStrategy to runtime_event_register() to allow strategies to send exogenous 'fills' to each other										
+	Also made improvements to parsing error reporting for the command line external_fill instruction									
+										
+ENHANCEMENT: In FIX LimeExecutionHandler's fix.config file, new variable for automatically sending unattributed external fills to a named strategy										
+	AttributeExternalOrdersTo=strategyName									
+	Can be used to send all fills originating from a source such as Portal automatically to a catch-all strategy									
+	Adapter will also listen for a strategy name in tag 9050 ('client order data') to allow external EMS's (eg Portal) to identify a strategy in their order tickets									
+										
+BUG FIX: In LocalDevServer, fixed issue with SimulatedMarketAdpater mislabeling side for cancel messages in OnDepth										
+
+-------------------------------------------------------------------------------
+8/12/2013: Version 1.7.0.0 Release Notes		
+
+SDK LIBRARY UPDATE: Upgrades Boost to version 1.54		
+		
+	! This Boost version had a header name conflict with Eigen, so we had to revise how we reference the Eigen include paths.	
+		Strategy project files should no longer list '..includes\eigen\Eigen' as an additional include directory
+		
+ENHANCEMENT: Fill simulator improvements		
+		
+	Minimum resolution for latency settings is now 1 microsecond rather than 1 millisecond	
+		
+	In LiveSim & LocalDev servers, simulator no longer has an independent thread, allowing more deterministic behavior and smaller latency settings	
+		
+	Simulator now reports a 'reason' value for rejects	
+		
+ENHANCEMENT: Added Strategy::Stop() and Strategy::Pause() to the API to allow programmatically stopping or pausing a strategy instance		
+		
+ENHANCEMENT: Adds server configuration options for realtime PnL marks 		
+		
+	New server config file variable MARKING_MODE can be set to MARK_TO_MARKET (default), MARK_TO_MID, or MARK_TO_LAST	
+		
+ENHANCEMENT: In Live servers, adds ability to manually control Event Processor assignment for strategy instances when NUM_PROCESSORS is set greater than 1
+		
+	This is done via new server command line instruction 'assign_processor'; assignment requires server restart to take effect	
+		
+ENHANCEMENT: LimeInside execution adapter mirrors support for the OrderParams.custom_params() fix tags available via the LimeFIX execution adapter		
+		
+	Updates to LimeInside v1.33	
+		
+ENHANCEMENT: Adds market center fee settings for opening auction order executions and closing auction order executions		
+		
+ENHANCEMENT: Adds fields 'liquidity_action' and 'last_market' to FillInfo, and populates these fields with LimeFIX and LimeInside adapters		
+		
+ENHANCEMENT: In Strategy Manager and server command line, adds ability to export the full order history, rather than final order states		
+		
+ENHANCEMENT: Strategy Manager's flashing alert behavior extended to Strategy Logs rather than just system Messages, with thresholds now configurable in Tools->System Settings dialog.		
+		
+ENHANCEMENT: Strategy Manager's Server Connections dialog now allows editing or deleting a connection once it is disabled.		
+		
+BUG FIX: In OneTickAdapter, fixed configuration problem with selecting TVITCH as the database table source		
+		
+	Also adds handling for the TVITCH database Imbalance ticks	
+	
+-------------------------------------------------------------------------------
+6/07/2013: Version 1.6.0.0 Release Notes		
+								
+PRODUCT RENAMING:  Product's name has changed from Cactus Trader to Lime Strategy Studio								
+								
+	A full guide to the renaming changes is available in the separate 'CactusToStrategyStudioRenaming' document, available on the FTP							
+	Please plan for extra time with this release to migrate strategy code to use revised namespaces and class names							
+								
+BUG FIX:  Fixed threading bug which could cause problems with heavy inter-strategy and topic messaging with NUM_PROCESSORS > 1 on live servers								
+								
+NEW ADAPTER: New BTIG Execution is adapter available								
+								
+NEW FEATURE: Adds support for LU/LD Price bands from the consolidated US Equity feeds								
+								
+	Strategy class has a new OnPriceBand event callback for these messages							
+					
+	Added handling for price bands to the Citrius LimeAdapter, updates to Citrius 2.1.8							
+								
+ENHANCEMENT:  Improved Fill Simulator handling for MOO/LOO auction orders								
+								
+	These orders now process based first trade for each instrument after the 9:30 EST, rather than at 9:30 EST based on last trade price							
+	This resolves backtesting issues handling MOO/LOO orders in tickers that have no pre-open activitey							
+
+-------------------------------------------------------------------------------
+5/07/2013: Version 1.5.0.0 Release Notes		
+
+ENHANCEMENT:		Improvements to Citrius LimeAdapter				
+						
+	Adds support for Citrius' TradesOnly and TopOfBook features					
+		Updated format for lime_source_config.txt file is:				
+		#FORMAT SHOULD BE: "HOST:PORT,SOURCE_ID,USER,PASSWORD[,TOP_OF_BOOK=false,TRADES_ONLY=false]"				
+						
+		TOP_OF_BOOK applies to order book feeds and will strip the feed into a single order book entry, containing the aggregated top of book volume, for each side of the market				
+						
+		For the case where TRADES_ONLY is enabled for all feeds, we've added a new server config variable to enable trades-only simulation on a live server (the same logic as used for a Trades-Only backtest):				
+			TRADES_ONLY_SIM=TRUE			
+			This parameter must be added to LiveSimServer's config.txt to simulate from just trades data			
+						
+	Adds handling for new ARCB and NYSB BBO data sources					
+		Due to recent depth-feed price increases, we've added special handling for ARCB/NYSB so if you subscribe to both NYOU+NYSB or ARCA+ARCB, the order book				
+		feed will populate the instrument's order_book object and the BBO feed will trigger OnQuote with IsDirect=true (the original handling for the deprecated 'NYSE' BBO source), but now if you only subscribe				
+		to ARCB or NYSB the adapter treats it as an order book feed and use it to populate the book with a single entry per side. This lets you use ARCB/NYSB as a better drop in replacement for the depth feeds in our API.				
+						
+	For AMOU Imbalance messages, adjusts feed specific imbalance field normalization					
+						
+	Adds a cutoff to only log up to 5 instances of Citrius's unknownMsgType error code per data source, to avoid saturating logs with these generally benign error messages					
+						
+ENHANCEMENT:		Serialization improvements, most notably to LiveSimServer and Production servers' strategy Result File generation				
+						
+	Result files for live servers are now archived at server shutdown rather than at market close					
+						
+	If RECOVERY_MODE is on, by default we now append to a single result file (until a strategy Reset is requested), rather than generating a result file per day.					
+		A new server config variable "SPLIT_RESULTS_DAILY" can be added to the server config file to elect a results file per day				
+						
+ENHANCEMENT: 		New server config file variable DISABLE_COMMAND_LINE can be used to disable the server process's command prompt				
+						
+	With this flag enabled, the server can be run as a background process in Linux.		
+	To shutdown the server gracefully, send a signal (eg Cntrl-C), or use CactusServerCmd utility to issue the 'quit' command in file mode or in single command mode.
+	
+
+-------------------------------------------------------------------------------
+3/25/2013: Version 1.4.5.0 Release Notes			
+						
+BUG FIX: 	Fixes thread safety bug in Fill Simulator that could cause problems if NUM_PROCESSORS config variablewas set higher than 1					
+						
+NEW FEATURE: Strategy Manager has a new 'Read Only' safety mode, toggled via the 'View' menu, which can be used to disable all features which can affect the behaviour of running Strategies						
+						
+ENHANCEMENT:		All GUI DateTime data grid columns are now backed by a sequenced data type, so resorting by time preserves order when timestamps are tied				
+						
+ENHANCEMENT:		DayPnl conventions made more consistent between API and StrategyManager and between backtest and live servers				
+						
+	Like the Strategy Manager, server's day_pnl() accessors now cache the 4pm EST closing PnL, but don't use that pnl to reset the DayPnL until the day boundry passes					
+		Server uses the 4pm closing PnL as its benchmark pnl for the next day whenever possible; if the server shuts down before 4pm, it will use the pnl at shutdown time instead				
+						
+	With RECOVERY_MODE enabled, live server flavors now send the full history of daily pnl's to the Strategy Manager, available for export in 'Export Daily Performance'					
+						
+ENHANCEMENT: 		Improved coverage for logging adapter related errors to the Strategy Manager rather than just to log files				
+						
+ENHANCEMENT:		Improved enforcement of Strategy::OnParamValidate, with a few related minor adjustments to the params API				
+						
+	OnParamValidate and OnParamChanged are now checked/called when the parameter's default value is set within CactusParams::CreateParam(…)					
+		As a result, we revised the default implementation of OnParamValidate to simply return true in Strategy.h; user implementations should not check whether the param 				
+		is already in the cactus_params() collection, as this will not be true yet during parameter creation.				
+						
+		If a parameter's default value is inconsistent with OnParamValidate (or for numeric params, inconsistent with min/max constraints) CreateParam will return null				
+		and errors will be logged to the log file and to the Strategy Manager				
+
+-------------------------------------------------------------------------------
+2/28/2013: Version 1.4.0.0 Release Notes	
+
+BUG FIX: 	Fixes issue introduced in v1.3 where in Live Simulation, simulator can improperly reject DAY orders if server starts pre-open without any strategy instances defined						
+							
+API Revision: IOrderTracker's find() and find_working() accessors now return a const Order* rather than an Order*							
+							
+NEW FEATURE: New Strategy Grid Viewer available in the Strategy Manager							
+	Supplements the Strategy Tree, providing a sortable grid view of all Strategy Instances, along with core metrics: STATE, PnL, DayPnL, SharesTraded						
+	Allows multi-select to batch Start/Stop/Pause/Terminate strategies						
+							
+NEW FEATURE: New custom strategy graph capability							
+							
+	Adds ability to generate custom time series graphs from within a strategy and display them in the Strategy Manager						
+							
+	API interfaces are located in IStrategyGraphs.h, IGraphSeriesCollection.h, and IGraphSeries.h						
+		API's Strategy class now has a hook DefineStrategyGraphs for an ideal place to add strategy graph series using graphs().series().add("ExampleSeriesName") 					
+		Add datapoints to a graph series using graphs().series()["ExampleSeriesName"]->push_back(msg.event_time(), double)					
+		By default, server throttles the new points to avoid overloading the network and Strategy Manager with data					
+			Minimimum time between points defaults to 1 second for a live server and 15 seconds for a backtest server, may be configured using CUSTOM_GRAPH_THROTTLING_SEC in server config file				
+							
+	Custom strategy graphs can be viewed in Strategy Manager by opening a copy of the View -> Custom Strategy Graphs dialog and adding the desired series to the selected series list						
+
+-------------------------------------------------------------------------------
+2/6/2013: Version 1.3.5.0 Release Notes		
+
+BUG FIX: 	Resolves several issues related to v1.3 enhancements, including:				
+	Changes to server default setting for new sales_fee_per_share setting were not registering properly when sent via Strategy Manager's Tools>'Server Default Account Fees' dialog				
+	With new WaitToFillIfLockedCrossed simulator option enabled, simulated orders could get stuck REPLACE_PENDING until filled or expired if two replaces were rapidly sent while the market remained in a locked/crossed state				
+	ThomsonQA corporate action adapter wasn't fully propogating spinoffs				
+					
+BUG FIX:	Fixes issue where SendMessageToStrategy, if triggered from a ScheduledEvent at startup with fireIfPast set to true, or from StrategyControl when strategy state moves to STATE_READY, could hang some server versions				
+					
+ENHANCEMENT: Performance improvement in the SendMessageToStrategy path 					
+					
+ENHANCEMENT: Several performance improvements in Strategy Manager, most notably in the data grids and when resetting strategy data					
+					
+ENHANCEMENT: Usablility improvements to Order Entry dialog in the Strategy Manager					
+	Order grid right click context menu is less cluttered, as field selector is now limited to column header row.				
+	When bringing up 'Replace Order'  via right clicking in Orders grid, original quantity auto populates in the ticket				
+	New Order entry dialog sorts strategies alphabetically and preserves TIF and TYPE through changes in MarketCenter field				
+					
+SDK BUILD MIGRATION: Ubuntu build of the server has been migrated to Ubuntu 12.04 and gcc 4.6.3									
+
+-------------------------------------------------------------------------------
+1/16/2013: Version 1.3.0.0 Release Notes										
+	
+BUG FIX: 	Eliminated a problem where under certain circumstances, fill simulator was sending unnecessary order 'open' updates.									
+										
+NEW ADAPTER: An equities corporate action adapter is now available for Thomson's QADirect database										
+										
+NEW FEATURE: New server command line instruction "export_cra_file" available to export orders, fills, and intraday pnl snapshots to csv from a strategy result file										
+										
+NEW FEATURE: Added a command in StrategyManager to "Reset" a LiveSim or Production strategy instance to its initial state.										
+	This will trigger essentially the same code path used between runs of a backtest, ie OnResetStrategyState will trigger in your strategy code									
+										
+ENHANCEMENT: Several improvements to the Fill Simulator										
+										
+	Three new simulator settings are available:									
+		- Liquidity Multiplier can be used to adjust simulator's liquidity assumptions; higher values make passive limit orders harder to fill and marketable orders easier to fill								
+		- Ignore Trade Ticks can be used for full market data simulations to stop trade ticks from generating fills or decrementing the liquidity queue. 								
+			Makes passive orders effectively fill only if opposing side of the market crosses the limit price							
+		-Wait To Fill If Locked/Crossed can be used to postpone order processing if market data is locked or crossed. Applies to both income orders and resting limit orders.								
+			Makes it harder to simulate profits from trading crossed markets which are likely hard to fill against in live trading							
+										
+	Fill Simulator now has stylized support for MOO/LOO/MOC/LOC orders									
+		- Simulator accepts ORDER_TIF_OPG prior to the open and ORDER_TIF_AT_THE_CLOSE prior to the close for NYSE, ARCA, NASDAQ, and BATS; rejects otherwise								
+		- For now fill price will be based off the last trade price prior to the market state transition, and we will not validate symbol eligibility or exchange specific rules on side vs imbalance direction as the cross nears								
+										
+	Stricter TIF handling -- ORDER_TIF_DAY orders will now be rejected after the close for equities and options									
+										
+	For better consistency with production trading, the Simulator will now Reject rather than return send failures for orders that fail basic parameter validation (eg positive order quantity)									
+										
+ENHANCEMENT: OneTick backtest reader will now pull and process imbalance ticks from the Citrius tables										
+										
+ENHANCEMENT: Enforcement of strategy instance name uniqueness is no longer inclusive of terminated strategy instances										
+										
+ENHANCEMENT: Added a fee setting for sales fees per contract, which can be used to input a setting for FINRA TAF fees.										
+										
+ENHANCEMENT: Added gross notional as an option to Strategy Manager's intraday graphs										
+										
+ENHANCEMENT: Improved exception handling in OnParamChanged to catch and report exceptions at a per-parameter level										
+										
+ENHANCEMENT: In backtest servers, added a filter to SendMessageToStrategy and Topic messaging to prevent strategies from sending messages to instances running in different experiments										
+										
+ENHANCEMENT: StrategyManager's strategy tree is now sorted alphabetically rather than by instance creation time										
+	
+-------------------------------------------------------------------------------
+11/12/2012: Version 1.2.0.0 Release Notes										
+											
+BUG FIX: 	With orders grid timeout enabled, Strategy Manager's order count on the summary report was displaying just the number of orders in the orders grid, forgetting about orders that had timed out of the grid										
+											
+MAJOR INTERFACE REVISION: Streamlined and enhanced IOrderTracker, and replaced OrderDetails/OrderInfo struct with the Order class; see GettingStarted guide for additional documentation											
+											
+	IOrderTracker now allows you to look up all tracked orders (any order placed during the trading day) as well as the orders currently working										
+											
+	Iterating through working orders by instrument is now more efficient										
+											
+	More extensive set of order stats, including working notional exposures, at both the instrument and strategy level are available through orders().stats() and orders().stats(const Instrument* instr)										
+											
+		KEY DEPRECATED IOrderTracker FUNCTIONS																		KEY NEW IOrderTracker FUNCTIONS
+											
+		bool GetRefTrackedOrder(const OrderID orderID, OrderInfo*& detailsPtr)										Order* find(OrderID orderID)
+																													Order* find_working(OrderID orderID)
+											
+		void FetchWorkingOrdersByInstrument(const Instrument* instr, std::vector<const OrderInfo*>* out)			WorkingOrdersConstIter working_orders_begin(const Instrument* instrument)
+																													WorkingOrdersConstIter working_orders_end(const Instrument* instrument)
+											
+		int NumNetWorkingPosition(const Instrument* instrument)														int stats(instrument).net_working_order_size()
+											
+	The Order class has mostly the same set of information as OrderDetails did, but with class accessors instead of struct members. OrderParams are also directly available as an accessor from this class										
+											
+	One important change is we're now explicetly separating order_state( ) from last_update_type(); the former gives the overall state of the order (with well defined state transition rules), the latter gives the current order update type.										
+	Documentation on the conventions used by OrderState and OrderUpdateType are laid out in the Getting Started guide.										
+											
+	OrderUpdateEventMsg's fill() accessor now returns a pointer, null when !fill_occured()										
+											
+	For better consistency with sign conventions on order exposure sizes, fill sizes, portfolio positions and weights, we've updated the sign convention on IPortfolioTracker.short_notional(..) and PositionRecord.short_notional()										
+	so they now return negative numbers										
+											
+	Finally, enums for OrderType and OrderTIF have been updated to allign better to more recent versions of FIX, facilitating support for market on open/close with the Lime execution adapters.										
+											
+MAJOR INTERFACE REVISION: Streamlined event registration interface; see StrategyEventRegister.h and StrategyRuntimeEventRegister.h for full details, along with example strategies for usage											
+											
+	Much simpler syntax for event registration. Some examples:										
+		eventRegister->RegisterForBars("IBM", BAR_TYPE_TIME, 10);									
+		eventRegister->RegisterForMarketData("DELL");									
+											
+	Registration interface has friendlier naming conventions now (example: typedef RegisterMDEventRetValue is now named EventInstrumentPair)										
+											
+	In conjunction with the refactored registration interface, we made a few minor naming improvements:										
+		BAR_TYPE_RVAR is now BAR_TYPE_VARIANCE									
+		BarEventMsg::bar_event_type() -> BarEventMsg::type() ; the message also now has an accessor for p_value() for variance bars									
+		ScheduledEventMessage::scheduled_evt_name() -> ScheduledEventMessage::scheduled_event_name()									
+											
+LIBRARY STRUCTURE REVISION: Renamed "NDLib" to "CactusUtils"											
+											
+LIBRARY STRUCTURE REVISION: In Linux SDK, removed "lib" prefix from library names for consistency with windows SDK											
+											
+SDK ORGANIZATION REVISION: Renamed CactusTraderGUI.exe to CactusStrategyManager.exe											
+											
+NEW FEATURE: Basic order entry now included in the Strategy Manager GUI											
+	Located in the Trading->Order Entry dialog. Currently supports most DMA order params, sending orders on behalf of particular cactus strategy instances										
+	For now, only accepts orders for symbols the strategy is already registered for. Market data display will ultimately be added in a later release.										
+											
+NEW FEATURE: OnExternalOrder callback in the strategy interface											
+	Can be used to intercept the orders being submitted by Strategy Manager (as well as 3rd party platforms)										
+	Default implementation passes along the order for execution automatically. This can be overloaded for custom handling, and you can return false to NACK the orders										
+											
+ENHANCEMENT: Complete order history is available in StrategyManager by right clicking on an order in the Orders grid											
+											
+ENHANCEMENT: Strategy Manager now aggregates the Strategy Log grid											
+											
+ENHANCEMENT: Strategy Manager now has option "Export Strategy Logs" in the Data menu											
+											
+ENHANCEMENT: Positions grid allows for looking up positions as of a prior date/time																		
+											
+-------------------------------------------------------------------------------
+7/19/2012: Version 1.0.0.0 Release Notes
+
+BUG FIX: 	Fixed problem where after reuse of a backtest instance, RegisterForStrategyEvents and OnResetStrategyState were called in the wrong order			
+				
+NEW FEATURE: New StrategyCommands systesm to let developers DefineStrategyCommands (similarly to parameters) that will appear for triggering on the GUI				
+	StrategyCommand(CactusUInt32 commandID,  const std::string& commandName, InputType inputType = INPUT_TYPE_NO_INPUT, const std::string& inputPrompt = "");			
+	void ExampleStrategy::DefineStrategyCommands()			
+	{			
+		StrategyCommand command1(1, "Liquidate");		
+		strategy_commands().AddCommand(command1);		
+	}			
+	void SimpleMomentum::OnStrategyCommand(const StrategyCommandEventMsg& msg){}			
+	Commands  will be accessible in the Strategy Manager in the right click menu for an Instance or StrategyType			
+				
+NEW FEATURE: Added handling for market imbalance data for the exchange's price clearing auctions				
+	virtual void OnImbalance(const ImbalanceEventMsg& msg);			
+				
+NEW FEATURE: Added handling for security status and short sale restriction alerts				
+	virtual void OnInstrumentAlert(const InstrumentAlertEventMsg& msg);			
+				
+NEW FEATURE: Command line utility to interface with a running server. Provides an alternative to relying on the server process's command prompt or the Strategy Manager				
+	Included in the server upgrade packages, under the 'utilities' subdirectory. 
+	Allows working in 3 modes: opening a command prompt, supplying a single command via program arguments, or loading a commands file for batch processing			
+				
+ENHANCEEMENT: Added a "reason" field to OrderUpdateEventMsg and Strategy Manager's Orders grid in order to display things like reject reasons				
+				
+ENHANCEMENT: Added position level day shares traded and day trading costs to the Position grid in Strategy Manager				
+				
+ENHANCEMENT: In Strategy Manager, added ability to expire old completed orders from the Orders grid on a configurable time threshold.				
+	The setting is available in Tools > System Settings			
+				
+ENHANCEMENT: New example strategy in the SDK, SimpleMomentum				
+	Demonstrates a portfolio strategy that goes long names whose short term moving average is above a longer term moving average, short otherwise			
+	This strategy demonstrates usage of limit orders and StrategyCommands			
+				
+ENHANCEMENT: New command line commands for controlling strategies by type within a particular trading group				
+
+-------------------------------------------------------------------------------
+6/12/2012: Version 0.9.9.7 Release Notes
+
+BUG FIX: 	Fixed sporadic problems that could occur with renegotiating sequence numbers between Server and Strategy Manager after a network disconnect									
+										
+BUG FIX:	Strategy Manager now properly detects when a backtest instance is re-used via the Server command prompt, and clears out the data for the prior run of the backtest									
+										
+BUG FIX:	Fixed an issue with properly restoring order state with ENABLE_RECOVERY mode for certain sequences of cancel/rejected  orders									
+										
+INTERFACE REVISION: Strategy projects must have a new function in the extern "C" section of their headers to identify the version of the SDK they were built with.										
+	This allows the Server to reject loading old strategy dll's that are no longer compatble with it after a server upgrade. The SDK's example strategy projects have been updated to include:									
+	    _STRATEGY_EXPORTS const char* GetReleaseVersion()									
+	    {									
+	        return Strategy::release_version();									
+	    }									
+	Also Cactus Server will now release its handle on the dll/so if it fails to match on version/user/group, so that the server can reload a corrected build without a restart									
+										
+NEW FEATURE: Strategy Manager has a new dialog in the Tools menu for managing the Server's default account fees and propogating new settings to already existing strategy instances.										
+										
+NEW FEATURE: Strategy Manager's Add Instance dialog's Params tab now provides the ability to create a batch of instances with a range of parameter values										
+										
+NEW FEATURE: To complement the SendMessageToStrategy, we've added Topic based pub/sub messaging to the Strategy API										
+	Subscribe for topics via eventRegister->RegisterForTopicSubscription(...)									
+	Send messages for a topic via runtime_event_register()->SendMessageToTopic(…)									
+	Receive messages for a topic via the OnTopicMessage(…) event hook									
+										
+ENHANCMENT: Usability improvements to Strategy Manager's Add Instance dialog, better autopopulation based on where it's initiated from the Strategy Tree										
+										
+ENHANCEMENT: Usability improvements to Strategy Manager's New Backtest dialog, better autopopulation based on Strategy Tree context, multi-select, start batches on multiple backtest servers at once										
+										
+ENHANCEMENT: Added mapping of some new liquidity codes in the Lime execution handlers, and also added some built in logic for avoiding incompatibilities in rout configuration flags and order types										
+										
+ENHANCEMENT: In LimeAdapter, added handling for Citrius's new onMulticastLoss alerts										
+	Multicast Loss wil trigger an OnDataSubscription alert, with state = DATA_SUBSCRIPTION_WARNING, alert = DATA_SUBSCRIPTION_ALERT_DATA_GAP_DETECTED									
+	Optionally, if the Multicast Loss occurs on an order book, a new server config file flag can instruct the Cactus Server to remove the exchange's book from the aggregate order book									
+		This can be used to avoid having hanging orders affect the aggr_order_book, top_quote, and fill simulations, while still continuing to recieve data from the lossy feed in OnDepth and OnQuote:								
+		LIME_ADAPTER_WITHDRAW_FROM_AGGR_OB_ON_MULTICAST_LOSS=true								
+										
+ENHANCEMENT: Refinements to FillSimulator invokations in Backtesting servers										
+	 Prices on marketable fills are no longer delayed until the next tick, and Simulator fill processing is now rechecked after internally timed events									
+
+--------------------------------------------------------------------------------							
+5/10/2012: Version 0.9.9.5 Release Notes
+							
+BUG FIX: 	With Recovery Mode enabled, simulator now correctly cancels out open orders that were left over from before the server shut down						
+							
+BUG FIX:	Added fields for group membership to the Strategy Manager's Add User dialog, to allow correct initiatialization of a new user's group credentials from Strategy Manager						
+							
+NEW FEATURE: New server type ships with the SDK: CactusTrader Local Dev Server							
+	This server allows for local testing of strategy dlls against a simulated order book (order book data generated by a random price process).						
+		>Simulates data for multiple symbols and multiple exchanges but does not yet include simulating Consolidated Quote feeds. Over time we will make the test cases more flexible and realistic					
+	This server requires no licensing and does not enforce user/group authership validation checks, the purpose is to allow easy debugging on a dev box before promoting a strategy to a server with licensed data						
+							
+ENHANCMENT: Strategy Manager window will flash if an error level system message or strategy log arrives to make it more obvious something has gone wrong							
+							
+ENHANCEMENT: OneTick backtesting adapter updated to interface with the database tables in Lime's upcoming hosted OneTick offering, and to accept authentication parameters							
+							
+ENHANCEMENT: Added support for TickData.com's equity options trade files to the TickData.com backtest reader							
+							
+ENHANCEMENT: Added a dialog to the Strategy Manager for loading a file with a bulk list of strategy instance definitions, to help automate the process of creating strategy instances							
+							
+ENHANCEMENT: New server command prompt options for run/stop/pause by strategy type, update params by type, report an external fill, and load a file containing a bulk list of prompt commands							
+							
+ENHANCEMENT: Added BollingerBandIndicator to CactusAnalytics							
+							
+ENHANCEMENT: Upgrades boost to version 1.49							
+------------------------------------------------------------------------------------
+4/10/2012: Version 0.9.9.2 Release Notes										
+										
+BUG FIX: Fixed problems in Linux server builds where server shutdown process can hang if there are open Strategy Manger connections.										
+										
+BUG FIX: Strategy Manager is now able to better handle if it stays up between server restarts where a Strategy type's parameter definitions have changed, and if it's										
+	connected to multiple servers with inconsistent parameter definitions for the same strategy type due to strategy version mismatches.									
+										
+NEW FEATURE: Expanded server's command line control functionality, including starting, stopping, pausing strategies, and changing their parameters. 										
+	See the GettingStarted guide for command line documentation									
+										
+INTERFACE REVISION: Changed OnOrderUpdate's event message from passing along the submitted order_params() to pass along the full order_details()										
+										
+ENHANCEMENT: Transitions trade condition handling to allow for up to four trade conditions. Moves trade condition summary functions from ConditionCodes.h to inside the Trade class.										
+	In addition to adding trade_condition2, trade_condition3, and trade_condition4, we added bool HasSpecifiedtradeCondition(TradeCondition), 									
+	which allows you to check for conditions without worrying about which field it should be in, and without having to worry about when your historical data									
+	 transitioned from using single trade conditions to four.									
+										
+ENHANCEMENT: Scheduled events now have deterministic priority relative to time bars. If bars and scheduled events are due at the same time, bars will come first.										
+										
+ENHANCEMENT: Named constructor for RecurringScheduledEvents now takes an endFireTime parameter.										
+										
+ENHANCEMENT: More heartbeating between Strategy Manager and server so we can detect stalled TCP/IP connections more promptly										
+										
+ENHANCEMENT: Additional heartbeating in the server's event processor to prevent sparse after hours market activity from leading to lags in triggering timed events										
+										
+ENHANCEMENT: Updates SDK's copy of Eigen to version 3.0.5										
+										
+ENHANCEMENT: In Strategy Manager, added ability to hide columns from Positions/Orders/Executions/TradeReports grids										
+-------------------------------------------------------------------------------------
+3/6/2012: Version 0.9.9.0 Release Notes										
+										
+BUG FIX: Fixed problems with market state initialization for new strategy instances added post open if the server starts pre-open										
+										
+BUG FIX: Ensures event times are always set appropriately for StrategyControl event messages										
+										
+BUG FIX: In LimeExecutionAdapter, correctly handles missing fields in a few dark pool routes' (BIDS, VORTX) execution reports, corrects AllowRouting handling for EDGEX/EDGEA										
+										
+BUG FIX: SprywareAdapter wasn't normalizing source_time fields to UTC										
+										
+BUG FIX: StrategyManager doesn't receive StrategyType broadcast refresh after reloading strategy dlls.										
+										
+NEW FEATURE: Adds ability to import fills from external sources via the StrategyManager GUI, so live strategies can incorporate them into position management										
+	The input dialog is located in StrategyManager's Tools->Manage External Fills; an example of the import file format is located in the SDK's docs directory.									
+	The Strategy API exposes the imported fills via the new OnExternalFill event in the Strategy class.									
+										
+NEW FEATURE: VWAP indicator class in CactusAnalytics; tracks VWAP either over a time-based window or volume based window, and allows for filtering input trade sizes.										
+										
+ENHANCEMENT: In CactusAnalytics' InhomogenousOperator library, added two new variants of OperatorActivityPerSecond: OperatorDampedActivityPerSecond and OperatorAverageActivityPerSecond										
+	The new variants offer alternative methods for smoothing the estimate, so that it's less influenced by small time intervals leading to spikes in the metric									
+										
+ENHANCEMENT: Adds ATSs (dark pools) to the market center id enum, and an IsEquityATS function to help classify them										
+										
+ENHANCEMENT: Adds new fields to the OrderParams: minimum_quantity, peg_type, peg_offset, is_hidden, post_only										
+	Note in this release the Cactus Fill Simulator ignores these new fields, but an upcoming version will add peg order simulation capability									
+										
+ENHANCEMENT: Adds support for RouteInstructions and LockedCrossAction to LimeExecutionHandler's config file; removes the MidPeg flag as its been moved to the API										
+										
+ENHANCEMENT: Cactus server will no longer autoclose if connection to primary market data adapter fails.										
+										
+ENHANCEMENT: Executable names for the Cactus Servers are now differentiated by server type to make it easier to tell the processes apart when multiple flavors are running on the same box										
+	New executable names are: CactusTraderBacktestServer.exe, CactusTraderLiveSimServer.exe, CactusTraderProdServer.exe									
+										
+ENHANCEMENT: Updates LimeAdapter to build against Citrius 2.1.7										
+										
+ENHANCEMENT: Adds handling for LAVA depth feed in the LimeAdapter										
+	As LAVA is not an exchange, we build an order book for it, but it does not contribute to the Aggregate order book, as the liquidity is redundant with LAVA's quotes on NSX									
+										
+ENHANCEMENT: In LimeAdapter, adds option to attempt to auto-reconnect to Citrius datasources if login fails, useful when starting server before all lime source feeds are active										
+	This can be enabled by setting LIME_ADAPTER_LOGIN_RECONNECT=true in the server's config file		
+---------------------------------------------------------------------------------------------	
+2/3/2012: Version 0.9.8.7 Release Notes							
+							
+BUG FIX: Empty string strategy parameters caused an error output on server console when server starts up							
+							
+NEW FEATURE: Strategy Manager now gives the option to filter out inactive times ranges from the performance graph.							
+							
+NEW FEATURE: Added the ability to configure servers from within the Strategy Manager GUI, and to see which instances belong to which servers in the Strategy tree							
+							
+NEW FEATURE: New backtest reader available for tickdata.com's flat files							
+							
+ENHANCEMENT: IOrderBook interface now has accessors for TotalBidSize and TotalAskSize							
+							
+ENHANCEMENT: New trade_actions->SendCancelAll(const Instrument*) overload for cancelling all orders for just a particular instrument							
+							
+ENHANCEMENT: Strategy Manager remembers more of its user settings between sessions							
+							
+ENHANCEMENT: Updated Spryware adapter to use the latest 3.2.1.32 version of their MIS api							
+							
+ENHANCEMENT: Performance improvements in order management							
+							
+ENHANCEMENT: Performance improvements in client server messaging protocol							
+							
+ENHANCEMENT: More filtering of trade conditions in fill simulation logic							
+----------------------------------------------------------------------------------------------

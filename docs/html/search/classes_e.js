@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['recursiveleastsquares',['RecursiveLeastSquares',['../dc/de6/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_recursive_least_squares.html',1,'LimeBrokerage::StrategyStudio::Analytics']]],
+  ['registerbarsparams',['RegisterBarsParams',['../db/d59/struct_lime_brokerage_1_1_strategy_studio_1_1_register_bars_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerbroadcastcontroleventparams',['RegisterBroadcastControlEventParams',['../db/de3/struct_lime_brokerage_1_1_strategy_studio_1_1_register_broadcast_control_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerclosureeventparams',['RegisterClosureEventParams',['../d3/d9d/struct_lime_brokerage_1_1_strategy_studio_1_1_register_closure_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registercontroleventparams',['RegisterControlEventParams',['../de/ddd/struct_lime_brokerage_1_1_strategy_studio_1_1_register_control_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registercorpactioneventparams',['RegisterCorpActionEventParams',['../dc/d11/struct_lime_brokerage_1_1_strategy_studio_1_1_register_corp_action_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerdataparams',['RegisterDataParams',['../de/ddb/struct_lime_brokerage_1_1_strategy_studio_1_1_register_data_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerexternalorderparams',['RegisterExternalOrderParams',['../dd/dcf/struct_lime_brokerage_1_1_strategy_studio_1_1_register_external_order_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registermarketdataparams',['RegisterMarketDataParams',['../db/d37/struct_lime_brokerage_1_1_strategy_studio_1_1_register_market_data_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registernewsparams',['RegisterNewsParams',['../d8/d62/struct_lime_brokerage_1_1_strategy_studio_1_1_register_news_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerorderupdateeventparams',['RegisterOrderUpdateEventParams',['../de/d00/struct_lime_brokerage_1_1_strategy_studio_1_1_register_order_update_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerscheduledeventparams',['RegisterScheduledEventParams',['../d0/d13/struct_lime_brokerage_1_1_strategy_studio_1_1_register_scheduled_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registersentimentparams',['RegisterSentimentParams',['../d7/d41/struct_lime_brokerage_1_1_strategy_studio_1_1_register_sentiment_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerstrategyinstancestatechangeeventparams',['RegisterStrategyInstanceStateChangeEventParams',['../d5/d8a/struct_lime_brokerage_1_1_strategy_studio_1_1_register_strategy_instance_state_change_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registerstrategystatechangeeventparams',['RegisterStrategyStateChangeEventParams',['../d4/d3b/struct_lime_brokerage_1_1_strategy_studio_1_1_register_strategy_state_change_event_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['registertopicsubscriptionparams',['RegisterTopicSubscriptionParams',['../db/dbf/struct_lime_brokerage_1_1_strategy_studio_1_1_register_topic_subscription_params.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['replayeventmsg',['ReplayEventMsg',['../d0/d63/class_lime_brokerage_1_1_strategy_studio_1_1_replay_event_msg.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['replayeventtypeutils',['ReplayEventTypeUtils',['../d2/d29/class_lime_brokerage_1_1_strategy_studio_1_1_replay_event_type_utils.html',1,'LimeBrokerage::StrategyStudio']]],
+  ['rollingwindow',['RollingWindow',['../dd/d84/class_lime_brokerage_1_1_strategy_studio_1_1_analytics_1_1_rolling_window.html',1,'LimeBrokerage::StrategyStudio::Analytics']]]
+];

@@ -1,0 +1,28 @@
+var class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg =
+[
+    [ "NewsEventMsg", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#aa4f0fbe2bb29e5381d8715844494ca44", null ],
+    [ "~NewsEventMsg", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#aa70b9fef24bc1d54033463f97f0ae8cb", null ],
+    [ "entity", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#ac20b97bdd9503e8d3cc991cd84c569f6", null ],
+    [ "is_approximate", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a2e6877eb1e8c20fb5eb2f5a32affaf3b", null ],
+    [ "is_max_exclusive", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#adb1f8c5f197ad707acfef520fb56b8c5", null ],
+    [ "is_max_valid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a2b1210617220516c85881ae3b5123b2f", null ],
+    [ "is_mid_valid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a30aaceb1b0ad9a2b4e7b13db9a77280f", null ],
+    [ "is_min_exclusive", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a64aa96dd110b4691c2e3a65b5259cd15", null ],
+    [ "is_min_valid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a123e674199a74d378fcdfb9371ec0017", null ],
+    [ "IsValid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a83c0590fbd2bba4851ac3cdf96d880c4", null ],
+    [ "lower_bound", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a89d4fed26d2398fe69fa6823f4248f2b", null ],
+    [ "measure", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a89276bd7e6d404a33bcf2ccffe538636", null ],
+    [ "measurement_type", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a0fbd0972fd8ff3affc1c37ef0b8506f8", null ],
+    [ "mid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#ad905fdc37af85e97aee4c680bf8ee041", null ],
+    [ "period", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a4136fd4e9e59aaed2f40ade0e19eae8f", null ],
+    [ "set_entity", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a1a6803dd568f3c4620398fe93d2c194e", null ],
+    [ "set_flex_range_status", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a64f9f6e5a2069b229cad246f0ad65498", null ],
+    [ "set_lower_bound", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a45600822060d377c8e7c9c37d062dff1", null ],
+    [ "set_measure", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a66b00ad43b8849f55a874e0541156853", null ],
+    [ "set_measurement_type", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a9181e7b0b6976299ed1258b9ce781870", null ],
+    [ "set_mid", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#ac1b6d873b0f8a3f1e203de42c8e9c968", null ],
+    [ "set_period", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#abf159891519fc36816f0f33cd1f80481", null ],
+    [ "set_status", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a9d53ca85fb1d5bf1a0b95b8d73135cb3", null ],
+    [ "set_upper_bound", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a975f7da6cedce0843f52238c57d70482", null ],
+    [ "upper_bound", "d9/d92/class_lime_brokerage_1_1_strategy_studio_1_1_news_event_msg.html#a6fc5c1332257e48b36d18b203448b832", null ]
+];

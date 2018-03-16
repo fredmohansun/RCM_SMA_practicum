@@ -1,0 +1,6 @@
+#Format is: symbol,priceLowerBound,priceUpperBound
+DELL,11,18
+GS,100,140
+INTC,80,110
+PG,40,80
+TOL,17,28

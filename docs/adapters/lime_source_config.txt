@@ -1,0 +1,31 @@
+#FORMAT SHOULD BE: "HOST:PORT,SOURCE_ID,USER,PASSWORD[,TOP_OF_BOOK=false,TRADES_ONLY=false,IS_EXPRESS=false]"
+####Depth of book feeds
+10.22.10.112:7077,AMOU,user,password
+74.120.50.132:7047,ARCA,user,password
+10.22.10.104:7077,ARCT,user,password
+74.120.50.134:7047,BATS,user,password
+10.22.10.104:7047,BSX,user,password
+10.22.10.102:7077,BYX,user,password
+10.22.10.112:7047,CBSX,user,password
+10.22.10.107:7087,EDGA,user,password
+10.22.10.107:7077,EDGX,user,password
+74.120.50.130:7047,INET,user,password
+10.22.10.116:7057,NYOU,user,password
+10.22.10.112:7067,NYST,user,password
+10.22.10.104:7097,PSX,user,password
+####L1 Equity feeds
+#10.22.10.114:7057,SIAC,user,password
+#10.22.10.103:7067,UQDF,user,password
+#10.22.10.103:7057,UTDF,user,password
+####Option feeds
+#74.120.50.145:7047,AMXO,user,password
+#74.120.50.145:7057,AMXO,user,password
+#74.120.50.145:7067,AMXO,user,password
+#74.120.50.142:7047,ARCO,user,password
+#74.120.50.142:7057,ARCO,user,password
+#74.120.50.142:7067,ARCO,user,password
+#74.120.50.139:7047,BOX,user,password
+#74.120.50.139:7057,BTSO,user,password
+#74.120.50.202:7047,CBOE,user,password
+#74.120.50.202:7067,NSDQ,user,password
+#74.120.50.203:7067,NSDQ,user,password

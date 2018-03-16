@@ -1,0 +1,232 @@
+<!--
+<citriusquotesources> attributes:
+	* version - required
+
+	<quotesource> attributes:
+		* sourceid - required
+		* isactive - optional (default true) - skipped if false
+		* topofbook - optional (default false)
+		* tradesonly - optional (default false)
+		* isexpress - optional (default false)
+		* isreplay - optional (default false)
+		
+		<servergroup> attributes:
+			* group - optional (default A) - each group must be unique
+			* isactive - optional (default true) - skipped if false
+			* isprimary - optional (default false) - if true, connection established at start up
+			* isexpress - optional (default false)
+			
+			<source> attributes:
+				* host - required
+				* user - required
+				* password - required
+-->
+
+<citriusquotesources version='1'>
+	<!-- Equities sources -->
+	<quotesource sourceid='AMOU' isactive='false'>
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='AMXI' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='ARCA' isactive='false'>
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.132:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.196:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='C'>
+			<source host='74.120.50.133:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='ARCT' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='ARCB' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+	    <servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='BATS' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.134:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.198:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='C'>
+			<source host='74.120.50.135:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='BSX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.150:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.214:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='BYX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.150:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.214:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='EDGA' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.157:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.197:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='EDGX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.157:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.197:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='INET' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.130:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.194:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='C'>
+			<source host='74.120.50.131:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='NYSI' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='NYOU' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.155:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.218:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='NYST' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='NYSB' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.149:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.213:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='PSX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.150:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.214:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='SIAC' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.141:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.200:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='C'>
+			<source host='74.120.50.143:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='UQDF' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.140:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.206:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='UTDF' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.140:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.206:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	
+	<!-- Options sources -->
+	<quotesource sourceid='AMXO' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.145:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='ARCO' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.152:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='BOX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.139:7047' user='' password='' />
+		</servergroup>
+		<servergroup group='B'>
+			<source host='74.120.50.207:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='BTSO' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.146:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='CBOE' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.202:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='NSDQ' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.144:7047' user='' password='' />
+			<source host='74.120.50.144:7057' user='' password='' />
+		</servergroup>
+	</quotesource>
+	<quotesource sourceid='PHLX' isactive='false' >
+		<servergroup group='A' isprimary='true'>
+			<source host='74.120.50.136:7047' user='' password='' />
+		</servergroup>
+	</quotesource>
+</citriusquotesources>

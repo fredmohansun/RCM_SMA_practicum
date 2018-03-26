@@ -43,28 +43,29 @@ using namespace LimeBrokerage::StrategyStudio::Utilities;
 
 using namespace std;
 
+typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
+
 SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
     m_spState(),
     m_bars(),
     m_instrumentX(NULL),
-    m_instrumentY(NULL),
-    m_rollingWindow(15),
-    m_XLast(0),
-    m_XSDThreshold(0.005),
+    m_rollingWindow(50),
+    m_SentiThreshold(0.5),
+    m_MomThreshold(0.5),
     m_tradeSize(100),
     m_nOrdersOutstanding(0),
     m_DebugOn(true)
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
     std::string line;
-    getline(input_file, line);
-    typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
+    getline(input_file, line);//Get metadata
     SMAmap sma_data;
     while(!input_file.eof()){
 	getline(input_file, line);
-	SMA_entry = PSentimentEventMsg(line);
-	
+	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
+	TimeType SMA_time = TimeHelper(line);
+	sma_data[SMA_time] = SMA_entry
     }
     // note: assume market state is active
     m_spState.marketActive = true;

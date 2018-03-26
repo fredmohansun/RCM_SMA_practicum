@@ -163,7 +163,6 @@ private:
     StrategyLogicState m_spState;
     Bars m_bars;
     const MarketModels::Instrument* m_instrumentX;    
-    const MarketModels::Instrument* m_instrumentY;
     Analytics::ScalarRollingWindow<double> m_rollingWindow;
     double m_XLast;
     double m_XSDThreshold;

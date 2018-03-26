@@ -9,7 +9,8 @@
                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
                 "/usr/include",
                 "${workspaceRoot}",
-                "${workspaceRoot}/includes"
+                "${workspaceRoot}/includes",
+                "../../../includes"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
@@ -35,7 +36,8 @@
             "includePath": [
                 "/usr/include",
                 "/usr/local/include",
-                "${workspaceRoot}"
+                "${workspaceRoot}",
+                "../../../includes"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

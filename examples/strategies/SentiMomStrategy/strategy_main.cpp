@@ -16,7 +16,7 @@
 *     The software is provided "as is", and in no event shall the Company or any of its affiliates or successors be liable for any 
 *     damages, including any lost profits or other incidental or consequential damages relating to the use of this software.       
 *     The Company makes no representations or warranties, express or implied, with regards to this software.                        
-/*================================================================================*/   
+================================================================================*/   
 
 #ifdef _WIN32
     #include "stdafx.h"
@@ -65,7 +65,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
 	getline(input_file, line);
 	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
 	TimeType SMA_time = TimeHelper(line);
-	sma_data[SMA_time] = SMA_entry
+	sma_data[SMA_time] = SMA_entry;
     }
     // note: assume market state is active
     m_spState.marketActive = true;
@@ -108,17 +108,9 @@ void SentiMom::DefineStrategyGraphs()
 
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
 {    
-    int count = 0;
     for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
         EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 10);    
-        
-        if (count == 0) {
-            m_instrumentX = retVal.second;
-        } else if (count == 1) {
-            m_instrumentY = retVal.second;
-        }
-    
-        ++count;
+        m_instrumentX = retVal.second;
     }
 }
 
@@ -132,12 +124,12 @@ void SentiMom::OnTopQuote(const QuoteEventMsg& msg)
 
 void SentiMom::OnBar(const BarEventMsg& msg)
 {
-     if (m_DebugOn) {
+    if (m_DebugOn) {
         ostringstream str;
         str << msg.instrument().symbol() << ": "<< msg.bar();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
 	std::cout<< str.str().c_str()<<'\n';
-     }
+    }
     TimeType current_time = msg.bar_time();
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma.data.equal_range(current_time);
     for(SMAmap::iterator it = data_iterator.first(); it!= data_iterator.second(); it++){
@@ -278,16 +270,4 @@ void SentiMom::OnParamChanged(StrategyParam& param)
         if (!param.Get(&m_DebugOn))
             throw StrategyStudioException("Could not get trade size");
     }        
-}
-
-double str2num(std::string str){
-    std::stringstream ss(str);
-    double num;
-    ss>>num;
-    return num;
-}
-
-void data_helper(std::string line){
-    std::stringstream mystring(line);
-    std::vector<std::string> results((std::istream_iterator<std::string>(mystring)), std::istream_iterator<std::string>());
 }

@@ -1,26 +1,48 @@
 #ifndef _STRATEGY_STUDIO_PRACTICUM_SENTIMENT_EVENT_MSG_H_
 #define _STRATEGY_STUDIO_PRACTICUM_SENTIMENT_EVENT_MSG_H_
 
-#include <EventMsg.h>
-
-namespace LimeBrokerage {
-namespace StrategyStudio {
-
+#include <cstdlib>
 /**
- * SentimentEventMsg is an event message that gets triggered when a Sentiment event arrives
+ * PSentimentEventMsg is an event message,used in backtest, that gets triggered when a Sentiment event arrives
  */
-class PSentimentEventMsg : public EventMsg {
+class PSentimentEventMsg{
 public:
-    PSentimentEventMsg(Event* ev, Utilities::TimeType eventTime);
-    virtual ~PSentimentEventMsg();
+    PSentimentEventMsg(std::string line){
+    	std::stringstream split_helper(line);
+	    std::vector <std::string> split((std::istream_iterator<std::string>(split_helper)), std::istream_iterator<std::string>());
+        for(std::vector <std::string>::iterator it = split.begin(); it != split.end(); it++){
+            std::stringstream temp(*it);
+            switch(it - split.begin()){
+                case 0: break;
+                case 1: break;
+                case 2: break;
+                case 3: temp>>raw_s_; break;
+                case 4: temp>>raw_s_mean_; break;
+                case 5: temp>>raw_s_volatility_; break;
+                case 6: temp>>raw_s_score_; break;
+                case 7: temp>>s_; break;
+                case 8: temp>>s_mean_; break;
+                case 9: temp>>s_volatility_; break;
+                case 10: temp>>s_score_; break;
+                case 11: temp>>s_volume_; break;
+                case 12: temp>>s_vmean_; break;
+                case 13: temp>>s_vvolatility_; break;
+                case 14: temp>>s_vscore_; break;
+                case 15: temp>>s_dispersion_; break;
+                case 16: temp>>s_buzz_; break;
+                case 17: temp>>s_delta_; break;
+                case 18: break;
+                case 19: break;
+                case 20: break;
+                default: break;
+            }
+        }
+    }
+
+    ~PSentimentEventMsg(){
+    }
 
 public:
-    /**
-     * Gets and sets the stock's symbol
-     * @return returns the stock's symbol
-     */
-    const std::string& entity() const { return entity_; }
-    void set_entity(const std::string& entity) { entity_ = entity; }
 
     /**
      * Raw-S - Unweighted sentiment estimate provided by SMA
@@ -128,9 +150,6 @@ public:
     void set_s_vvolatility(double s_vvolatility) { s_vvolatility_ = s_vvolatility; }
 
 private:
-    Utilities::DateType datetime_;
-    std::string entity_;
-
     double raw_s_;
     double raw_s_mean_;
     double raw_s_score_;
@@ -147,8 +166,4 @@ private:
     double s_vvolatility_;
     int s_volume_;
 };
-
-} // namespace StrategyStudio
-} // namespace LimeBrokerage
-
 #endif

@@ -1,4 +1,4 @@
-/*================================================================================                               
+/* ================================================================================                               
 *     Source: ../Lime/StrategyStudio/examples/strategies/SentiMomStrategy/SentiMomExample.cpp                                                        
 *     Last Update: 2010/09/30 13:55:14                                                                            
 *     Contents:                                     
@@ -23,14 +23,13 @@
 #endif
 
 #include "strategy_main.h"
-#include "PracicumClass.h"
+#include "backtest_class.h"
 
 #include "FillInfo.h"
 #include "AllEventMsg.h"
 #include "ExecutionTypes.h"
 #include <Utilities/Cast.h>
 #include <Utilities/utils.h>
-
 #include <math.h>
 #include <iostream>
 #include <fstream>
@@ -45,6 +44,14 @@ using namespace std;
 
 typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 
+TimeType TimeHelper(std::string line){
+    std::stringstream split_helper(line);
+    std::vector <std::string> split((std::istream_iterator<std::string>(split_helper)), std::istream_iterator<std::string>());
+    std::string mytime = split[18]+' '+split[19]+".000";
+    TimeType res = TimeType(boost::posix_time::time_from_string(mytime));
+    return res;
+}
+
 SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const std::string& groupName):
     Strategy(strategyID, strategyName, groupName),
     m_spState(),
@@ -55,7 +62,8 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_MomThreshold(0.5),
     m_tradeSize(100),
     m_nOrdersOutstanding(0),
-    m_DebugOn(true)
+    m_DebugOn(true),
+    sma_data()
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
     std::string line;
@@ -65,7 +73,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
 	getline(input_file, line);
 	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
 	TimeType SMA_time = TimeHelper(line);
-	sma_data[SMA_time] = SMA_entry;
+	sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
     }
     // note: assume market state is active
     m_spState.marketActive = true;
@@ -90,14 +98,17 @@ void SentiMom::OnResetStrategyState()
 
 void SentiMom::DefineStrategyParams()
 {
-    CreateStrategyParamArgs arg1("X_StdDev", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE, m_XSDThreshold);
+    CreateStrategyParamArgs arg1("Price Threshold", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE, m_MomThreshold);
     params().CreateParam(arg1);
 
-    CreateStrategyParamArgs arg2("trade_size", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_INT, m_tradeSize);
+    CreateStrategyParamArgs arg2("Sentiment Threshold", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE, m_SentiThreshold);
     params().CreateParam(arg2);
 
-    CreateStrategyParamArgs arg3("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL, m_DebugOn);
+    CreateStrategyParamArgs arg3("trade_size", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_INT, m_tradeSize);
     params().CreateParam(arg3);
+
+    CreateStrategyParamArgs arg4("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL, m_DebugOn);
+    params().CreateParam(arg4);
 }
 
 void SentiMom::DefineStrategyGraphs()
@@ -109,7 +120,7 @@ void SentiMom::DefineStrategyGraphs()
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
 {    
     for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
-        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 10);    
+        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60*15);    
         m_instrumentX = retVal.second;
     }
 }
@@ -131,24 +142,25 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 	std::cout<< str.str().c_str()<<'\n';
     }
     TimeType current_time = msg.bar_time();
-    std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma.data.equal_range(current_time);
+    
+    std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
+    if (m_DebugOn){
+	ostringstream str2;
+	str2 << "BTC's S: "<< data_iterator.first->second.s();
+	logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
+    }
+    /*
     for(SMAmap::iterator it = data_iterator.first(); it!= data_iterator.second(); it++){
         if (m_DebugOn) {
 	    ostringstream str2;
-	    str2 << "BTC's Raw-S: "<< msg.bar();
-
+	    str2 << "BTC's Raw-S: "<< it.s();
+	    logger().LogToCLient(LOGLEVEL_INFO, str.str().c_str());
 	}
     }
+    */
     // update our bars collection
     m_bars[&msg.instrument()] = msg.bar();
-
-    if (m_bars.size() < 2) {
-	    //wait until we have bars for both pairs
-        return;
-    }
-
-    assert(m_bars.size() == 2);
-
+/*
     double ThisReturn = 0;
     if (m_XLast != 0) {
 //      barCloseRatio = m_bars[m_instrumentX].close() / m_bars[m_instrumentY].close();
@@ -185,6 +197,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     }
 
     if (m_spState.marketActive) AdjustPortfolio();
+*/
 }
 
 void SentiMom::AdjustPortfolio()
@@ -194,15 +207,15 @@ void SentiMom::AdjustPortfolio()
         return;
     }
 
-    int unitsNeeded = m_spState.unitsDesired - portfolio().position(m_instrumentY);
+    int unitsNeeded = m_spState.unitsDesired - portfolio().position(m_instrumentX);
 
     if (unitsNeeded > 0) {
         //SendBuyOrder(m_instrumentX, unitsNeeded);
-        SendBuyOrder(m_instrumentY, unitsNeeded);
+        SendBuyOrder(m_instrumentX, unitsNeeded);
 
     } else if (unitsNeeded < 0) {
         //SendSellOrder(m_instrumentX, -unitsNeeded);
-        SendSellOrder(m_instrumentY, -unitsNeeded);
+        SendSellOrder(m_instrumentX, -unitsNeeded);
     }
 }
 
@@ -260,9 +273,12 @@ void SentiMom::OnAppStateChange(const AppStateEventMsg& msg)
 
 void SentiMom::OnParamChanged(StrategyParam& param)
 {    
-    if (param.param_name() == "X_StdDev") {
-        if (!param.Get(&m_XSDThreshold))
-            throw StrategyStudioException("Could not get X_StdDev threshold");
+    if(param.param_name() == "Price_Thershold"){
+	if(!param.Get(&m_MomThreshold))
+            throw StrategyStudioException("Could not get Price threshold");		
+    } else if (param.param_name() == "Sentiment_Threshold") {
+        if (!param.Get(&m_SentiThreshold))
+            throw StrategyStudioException("Could not get sentiment threshold");
     } else if (param.param_name() == "trade_size") {
         if (!param.Get(&m_tradeSize))
             throw StrategyStudioException("Could not get trade size");

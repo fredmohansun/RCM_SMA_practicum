@@ -31,6 +31,8 @@
     #endif
 #endif
 
+#include "backtest_class.h"
+
 #include <Strategy.h>
 #include <Analytics/ScalarRollingWindow.h>
 #include <MarketModels/Instrument.h>
@@ -41,6 +43,8 @@
 #include <iostream>
 
 using namespace LimeBrokerage::StrategyStudio;
+
+typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 
 struct StrategyLogicState {
 
@@ -164,11 +168,12 @@ private:
     Bars m_bars;
     const MarketModels::Instrument* m_instrumentX;    
     Analytics::ScalarRollingWindow<double> m_rollingWindow;
-    double m_XLast;
-    double m_XSDThreshold;
+    double m_MomThreshold;
+    double m_SentiThreshold;
     int m_tradeSize;
     int m_nOrdersOutstanding;
     bool m_DebugOn;
+    SMAmap sma_data;
 };
 
 // 2 Helper function for Backtesting with SMA

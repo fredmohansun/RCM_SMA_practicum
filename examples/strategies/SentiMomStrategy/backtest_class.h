@@ -1,7 +1,10 @@
-#ifndef _STRATEGY_STUDIO_PRACTICUM_SENTIMENT_EVENT_MSG_H_
+#ifndef _STRATEGY_STUDIO_PRACTICUM_SENTIMENT_EVENT_MSG_H_ 
 #define _STRATEGY_STUDIO_PRACTICUM_SENTIMENT_EVENT_MSG_H_
 
-#include <cstdlib>
+#include<vector>
+#include<string>
+#include<sstream>
+
 /**
  * PSentimentEventMsg is an event message,used in backtest, that gets triggered when a Sentiment event arrives
  */
@@ -9,7 +12,7 @@ class PSentimentEventMsg{
 public:
     PSentimentEventMsg(std::string line){
     	std::stringstream split_helper(line);
-	    std::vector <std::string> split((std::istream_iterator<std::string>(split_helper)), std::istream_iterator<std::string>());
+	std::vector <std::string> split((std::istream_iterator<std::string>(split_helper)), std::istream_iterator<std::string>());
         for(std::vector <std::string>::iterator it = split.begin(); it != split.end(); it++){
             std::stringstream temp(*it);
             switch(it - split.begin()){

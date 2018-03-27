@@ -65,6 +65,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_DebugOn(true),
     sma_data()
 {
+    std::cout<<"constructing SentiMom...\n";
     ifstream input_file("BTC.X.txt", std::ifstream::in);
     std::string line;
     getline(input_file, line);//Get metadata
@@ -81,6 +82,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     this->set_enabled_pre_open_trade_flag(true);
     this->set_enabled_post_close_data_flag(true);
     this->set_enabled_post_close_trade_flag(true);
+    std::cout<<"construction done.\n";
 }
 
 SentiMom::~SentiMom()

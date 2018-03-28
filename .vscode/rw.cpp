@@ -6,13 +6,11 @@
 
     // update our bars collection
     m_bars[&msg.instrument()] = msg.bar();
-//zhaochao not very sure 
-if (m_bars.size() < 11) {
-	    //wait until we have bars for both pairs
-        return;
-    }
-    assert(m_bars.size() == 11);
+//zhaochao not very sure     
 	m_rollingWindow.push_back(m_bar[].close());
+
+        if (!m_rollingWindow.full())
+        return;
 
 	for(i=0;i<10;i++)
 	{
@@ -36,7 +34,7 @@ if (m_bars.size() < 11) {
 	m_std=sqrt(Spow/9);
     
     if (m_return[9] > m_average+0.5*m_std) {
-        m_spState.unitsDesired = 50000/m_bar.colse();//if we want to use 50% of our capital rather than the 50% of initial capital, 
+        m_spState.unitsDesired = 50000/m_bar.colse();//if we want to use 50% of our current capital rather than the 50% of initial capital, 
 	    //we can change 50000 into 0.5*portfolio().capital(BTC_USD)
     } else if (m_average-0.5*m_std<m_return[9]< m_average+0.5*m_std) {
         m_spState.unitsDesired = 25000/m_bar.colse();
@@ -66,6 +64,7 @@ if (m_bars.size() < 11) {
 		SendBuyOrder(BTC_USD, 0);
 	}
 }
-//No drawdown part
+//No drawdown part can be added simply by use m_return[9]-m_return[8] and certain threshold
 //Seems when prices increase to a certain level, we should make a decision whether to long more or sell some
-//add variable: capital return need to figure out their names or create them
+//add variable: capital(portfolio().capital(BTC_USD)),return(m_return can be define at the beginning) need to figure out their names or create them
+//portfolio().position(BTC_USD) this name need to be the same as previous

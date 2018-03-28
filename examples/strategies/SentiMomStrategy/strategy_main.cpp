@@ -67,15 +67,20 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
 {
     std::cout<<"constructing SentiMom...\n";
     ifstream input_file("BTC.X.txt", std::ifstream::in);
+    std::cout<<"BTC sentiment file readed...\n";
     std::string line;
     getline(input_file, line);//Get metadata
-    SMAmap sma_data;
+    std::cout<<line<<'\n';
+    std::cout<<"Metadata got...constructing sma data...\n";
     while(!input_file.eof()){
 	getline(input_file, line);
+	if(line[0]=='e') break;
+	std::cout<<line<<'\n';
 	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
 	TimeType SMA_time = TimeHelper(line);
 	sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
     }
+    std::cout<<"sma_data construction done...\n";
     // note: assume market state is active
     m_spState.marketActive = true;
     this->set_enabled_pre_open_data_flag(true);

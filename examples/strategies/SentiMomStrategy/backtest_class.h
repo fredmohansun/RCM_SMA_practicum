@@ -4,6 +4,7 @@
 #include<vector>
 #include<string>
 #include<sstream>
+#include<iterator>
 
 /**
  * PSentimentEventMsg is an event message,used in backtest, that gets triggered when a Sentiment event arrives

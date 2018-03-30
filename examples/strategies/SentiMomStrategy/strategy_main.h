@@ -115,6 +115,7 @@ public: /* from IEventCallback */
      */ 
     virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
+    virtual void OnScheduledEvent(const ScheduledEventMsg&);
     /**
      * This event contains strategy control commands arriving from the Strategy Studio client application (eg Strategy Manager)
      */ 
@@ -170,15 +171,10 @@ private:
     Analytics::ScalarRollingWindow<double> m_rollingWindow;
     double m_MomThreshold;
     double m_SentiThreshold;
-    int m_tradeSize;
     int m_nOrdersOutstanding;
     bool m_DebugOn;
     SMAmap sma_data;
 };
-
-// 2 Helper function for Backtesting with SMA
-double str2num(std::string str);
-void data_helper(std::string line);
 
 extern "C" {
 

@@ -57,37 +57,28 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_spState(),
     m_bars(),
     m_instrumentX(NULL),
-    m_rollingWindow(50),
+    m_rollingWindow(168),
     m_SentiThreshold(0.5),
     m_MomThreshold(0.5),
-    m_tradeSize(100),
     m_nOrdersOutstanding(0),
     m_DebugOn(true),
     sma_data()
 {
-    std::cout<<"constructing SentiMom...\n";
     ifstream input_file("BTC.X.txt", std::ifstream::in);
-    std::cout<<"BTC sentiment file readed...\n";
     std::string line;
     getline(input_file, line);//Get metadata
-    std::cout<<line<<'\n';
-    std::cout<<"Metadata got...constructing sma data...\n";
     while(!input_file.eof()){
-	getline(input_file, line);
-	std::cout<<line<<'\n';
-	if(line[0]=='e') break;
-	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
-	TimeType SMA_time = TimeHelper(line);
-	sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
+        getline(input_file, line);
+        PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
+        TimeType SMA_time = TimeHelper(line);
+        sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
     }
-    std::cout<<"sma_data construction done...\n";
     // note: assume market state is active
     m_spState.marketActive = true;
     this->set_enabled_pre_open_data_flag(true);
     this->set_enabled_pre_open_trade_flag(true);
     this->set_enabled_post_close_data_flag(true);
     this->set_enabled_post_close_trade_flag(true);
-    std::cout<<"construction done.\n";
 }
 
 SentiMom::~SentiMom()
@@ -111,25 +102,23 @@ void SentiMom::DefineStrategyParams()
     CreateStrategyParamArgs arg2("Sentiment Threshold", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_DOUBLE, m_SentiThreshold);
     params().CreateParam(arg2);
 
-    CreateStrategyParamArgs arg3("trade_size", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_INT, m_tradeSize);
+    CreateStrategyParamArgs arg3("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL, m_DebugOn);
     params().CreateParam(arg3);
-
-    CreateStrategyParamArgs arg4("debug", STRATEGY_PARAM_TYPE_RUNTIME, VALUE_TYPE_BOOL, m_DebugOn);
-    params().CreateParam(arg4);
 }
 
 void SentiMom::DefineStrategyGraphs()
 {
-    graphs().series().add("Mean");
-    graphs().series().add("ZScore");
+    // graphs().series().add("Mean"); 
+    // graphs().series().add("ZScore");
 }
 
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
-{    
+{   
     for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
-        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60*15);    
+        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60 * 60, 2.0, ConvertLocalToUTC(TimeType(currDate))+ boost::posix_time::minutes(10));    
         m_instrumentX = retVal.second;
     }
+    eventRegister->RegisterForRecurringScheduledEvents("Daily_No_Trade_Rebalancing", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));
 }
 
 void SentiMom::OnTrade(const TradeDataEventMsg& msg)
@@ -146,26 +135,17 @@ void SentiMom::OnBar(const BarEventMsg& msg)
         ostringstream str;
         str << msg.instrument().symbol() << ": "<< msg.bar();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-	std::cout<< str.str().c_str()<<'\n';
     }
     TimeType current_time = msg.bar_time();
     
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
-    if (m_DebugOn){
-	ostringstream str2;
-	str2 <<"At bar time:"<<current_time<<", recevied " << data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
-	logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
+    PSentimentEventMsg this_sma = data_iterator.first->second;
+        if (m_DebugOn){
+        ostringstream str2;
+        str2 << "BTC's S: "<< data_iterator.first->second.s();
+        logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
     }
-    /*
-    for(SMAmap::iterator it = data_iterator.first(); it!= data_iterator.second(); it++){
-        if (m_DebugOn) {
-	    ostringstream str2;
-	    str2 << "BTC's Raw-S: "<< it.s();
-	    logger().LogToCLient(LOGLEVEL_INFO, str.str().c_str());
-	}
-    }
-    */
-    // update our bars collection
+
     m_bars[&msg.instrument()] = msg.bar();
 /*
     double ThisReturn = 0;
@@ -205,6 +185,10 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 
     if (m_spState.marketActive) AdjustPortfolio();
 */
+}
+
+void SentiMom::OnScheduledEvent(const ScheduledEventMsg&){
+
 }
 
 void SentiMom::AdjustPortfolio()
@@ -286,9 +270,6 @@ void SentiMom::OnParamChanged(StrategyParam& param)
     } else if (param.param_name() == "Sentiment_Threshold") {
         if (!param.Get(&m_SentiThreshold))
             throw StrategyStudioException("Could not get sentiment threshold");
-    } else if (param.param_name() == "trade_size") {
-        if (!param.Get(&m_tradeSize))
-            throw StrategyStudioException("Could not get trade size");
     } else if (param.param_name() == "debug") {
         if (!param.Get(&m_DebugOn))
             throw StrategyStudioException("Could not get trade size");

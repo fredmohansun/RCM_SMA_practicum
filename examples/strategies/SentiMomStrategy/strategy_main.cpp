@@ -47,7 +47,7 @@ typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 TimeType TimeHelper(std::string line){
     std::stringstream split_helper(line);
     std::vector <std::string> split((std::istream_iterator<std::string>(split_helper)), std::istream_iterator<std::string>());
-    std::string mytime = split[18]+' '+split[19]+".000";
+    std::string mytime = split[1]+' '+split[2]+".000";
     TimeType res = TimeType(boost::posix_time::time_from_string(mytime));
     return res;
 }
@@ -74,8 +74,8 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     std::cout<<"Metadata got...constructing sma data...\n";
     while(!input_file.eof()){
 	getline(input_file, line);
-	if(line[0]=='e') break;
 	std::cout<<line<<'\n';
+	if(line[0]=='e') break;
 	PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
 	TimeType SMA_time = TimeHelper(line);
 	sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
@@ -153,7 +153,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
     if (m_DebugOn){
 	ostringstream str2;
-	str2 << "BTC's S: "<< data_iterator.first->second.s();
+	str2 <<"At bar time:"<<current_time<<", recevied " << data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
 	logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
     }
     /*

@@ -42,6 +42,9 @@ using namespace LimeBrokerage::StrategyStudio::Utilities;
 
 using namespace std;
 
+const double Level[5] = {0.0, 0.25, 0.50, 0.75, 1.0};
+const int L_count = 5;
+
 typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 
 TimeType TimeHelper(std::string line){
@@ -57,11 +60,13 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_spState(),
     m_bars(),
     m_instrumentX(NULL),
-    m_rollingWindow(168),
+    m_srollingWindow(168),
+    m_mrollingWindow(168),
     m_SentiThreshold(0.5),
     m_MomThreshold(0.5),
     m_nOrdersOutstanding(0),
     m_DebugOn(true),
+    m_Last(-1.0),
     sma_data()
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
@@ -88,9 +93,11 @@ SentiMom::~SentiMom()
 void SentiMom::OnResetStrategyState()
 {
     m_spState.marketActive = true;
-    m_spState.unitsDesired = 0;
+    m_spState.unitDesired = 0.0;
+    m_spState.level = 0;
 
-    m_rollingWindow.clear();
+    m_srollingWindow.clear();
+    m_mrollingWindow.clear();
     m_bars.clear();
 }
 
@@ -109,7 +116,7 @@ void SentiMom::DefineStrategyParams()
 void SentiMom::DefineStrategyGraphs()
 {
     // graphs().series().add("Mean"); 
-    // graphs().series().add("ZScore");
+    graphs().series().add("Level");
 }
 
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
@@ -118,7 +125,7 @@ void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, D
         EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60 * 60, 2.0, ConvertLocalToUTC(TimeType(currDate))+ boost::posix_time::minutes(10));    
         m_instrumentX = retVal.second;
     }
-    eventRegister->RegisterForRecurringScheduledEvents("Daily_No_Trade_Rebalancing", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));
+    eventRegister->RegisterForRecurringScheduledEvents("End_Day_Adjustment", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));
 }
 
 void SentiMom::OnTrade(const TradeDataEventMsg& msg)
@@ -131,64 +138,83 @@ void SentiMom::OnTopQuote(const QuoteEventMsg& msg)
 
 void SentiMom::OnBar(const BarEventMsg& msg)
 {
+    TimeType current_time = msg.bar_time();
+    std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
+    PSentimentEventMsg this_sma = data_iterator.first->second;
+
     if (m_DebugOn) {
         ostringstream str;
         str << msg.instrument().symbol() << ": "<< msg.bar();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-    }
-    TimeType current_time = msg.bar_time();
-    
-    std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
-    PSentimentEventMsg this_sma = data_iterator.first->second;
-        if (m_DebugOn){
         ostringstream str2;
-        str2 << "BTC's S: "<< data_iterator.first->second.s();
+        str2<<"At Bar time: "<<current_time<<", received: "<<data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
         logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
     }
-
     m_bars[&msg.instrument()] = msg.bar();
-/*
-    double ThisReturn = 0;
-    if (m_XLast != 0) {
-//      barCloseRatio = m_bars[m_instrumentX].close() / m_bars[m_instrumentY].close();
-        ThisReturn = (m_bars[m_instrumentX].close()-m_XLast)/m_XLast;
-	m_XLast = m_bars[m_instrumentX].close();
-	m_bars.clear();
-    } else {
- 	m_XLast = m_bars[m_instrumentX].close();
-        m_bars.clear();
+
+    if(m_Last < 0.0){
+        m_Last = m_bars[m_instrumentX].close();
         return;
     }
-    
-     m_rollingWindow.push_back(ThisReturn);
-   
-    // only process when we have a complete rolling window
-    if (!m_rollingWindow.full())
-        return;
 
-    if (orders().num_working_orders() > 0) 
-        return;
+    double this_return = (m_bars[m_instrumentX].close()-m_Last)/m_Last;
+    m_mrollingWindow.push_back(this_return);
+    m_srollingWindow.push_back(this_sma.s());
+    if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
 
-    //m_zScore = m_rollingWindow.ZScore();
-
-    //graphs().series()["Mean"]->push_back(msg.event_time(), m_rollingWindow.Mean());
-    //graphs().series()["ZScore"]->push_back(msg.event_time(), m_zScore);    
-    
-    // sell X and buy Y when z widens 
-    if (ThisReturn > m_XSDThreshold) {
-        m_spState.unitsDesired += m_tradeSize;
-    } else if (ThisReturn < -m_XSDThreshold) {
-        m_spState.unitsDesired -= m_tradeSize;
-    } else {
-        m_spState.unitsDesired += 0;
+    if(this_return > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
+        if(this_sma.s()>m_srollingWindow.Mean() + 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
+            if(m_spState.level + 2 < L_count)
+                m_spState.level += 2;
+            else
+                m_spState.level = L_count-1;
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            AdjustPortfolio();
+            return;
+        }
+        else if(this_sma.s()>m_srollingWindow.Mean() + m_SentiThreshold * m_srollingWindow.StdDev()){
+            if(m_spState.level + 1 < L_count)
+                m_spState.level++;
+            else
+                m_spState.level = L_count-1;
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            AdjustPortfolio();
+            return;
+        }
+        else    return; //No adjusting intra day if not confident enough
     }
-
-    if (m_spState.marketActive) AdjustPortfolio();
-*/
+    else if (this_return < m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev()){
+        if(this_sma.s()>m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
+            if(m_spState.level - 2 >= 0)
+                m_spState.level -= 2;
+            else
+                m_spState.level = 0;
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            AdjustPortfolio();
+            return;
+        }
+        else if(this_sma.s()>m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){
+            if(m_spState.level - 1 < L_count)
+                m_spState.level--;
+            else
+                m_spState.level = 0;
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            AdjustPortfolio();
+            return;
+        }
+        else    return; //No adjusting intra day if not confident enough
+    }
 }
 
-void SentiMom::OnScheduledEvent(const ScheduledEventMsg&){
-
+void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
+    if(msg.scheduled_event_name() == "End_Day_Adjustment"){
+        // AdjustPortfolio();
+        return;
+    }
 }
 
 void SentiMom::AdjustPortfolio()
@@ -197,17 +223,15 @@ void SentiMom::AdjustPortfolio()
     if (orders().num_working_orders() > 0) {
         return;
     }
+    double temp = m_spState.unitDesired - portfolio().position(m_instrumentX); 
 
-    int unitsNeeded = m_spState.unitsDesired - portfolio().position(m_instrumentX);
+    int unitsNeeded = (temp - (temp/1) >=0.5) ? (temp/1+1) : (temp / 1);
 
-    if (unitsNeeded > 0) {
-        //SendBuyOrder(m_instrumentX, unitsNeeded);
+    if (unitsNeeded > 0) 
         SendBuyOrder(m_instrumentX, unitsNeeded);
 
-    } else if (unitsNeeded < 0) {
-        //SendSellOrder(m_instrumentX, -unitsNeeded);
+    else if (unitsNeeded < 0) 
         SendSellOrder(m_instrumentX, -unitsNeeded);
-    }
 }
 
 void SentiMom::SendBuyOrder(const Instrument* instrument, int unitsNeeded)

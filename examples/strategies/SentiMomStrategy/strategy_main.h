@@ -48,15 +48,16 @@ typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 
 struct StrategyLogicState {
 
-    StrategyLogicState(): marketActive(0), unitsDesired(0) {}
+    StrategyLogicState(): marketActive(0), unitDesired(0.0), level(0) {}
 
-    StrategyLogicState(int sunitsDesired): 
-        marketActive(0), unitsDesired(unitsDesired)
+    StrategyLogicState(double proportionDesired): 
+        marketActive(0), unitDesired(unitDesired), level(0)
     {
     }
 
     bool marketActive;
-    int unitsDesired;    
+    double unitDesired;
+    int level;
 };
 
 class SentiMom : public Strategy {
@@ -116,6 +117,7 @@ public: /* from IEventCallback */
     virtual void OnOrderUpdate(const OrderUpdateEventMsg& msg);
 
     virtual void OnScheduledEvent(const ScheduledEventMsg&);
+    
     /**
      * This event contains strategy control commands arriving from the Strategy Studio client application (eg Strategy Manager)
      */ 
@@ -168,9 +170,11 @@ private:
     StrategyLogicState m_spState;
     Bars m_bars;
     const MarketModels::Instrument* m_instrumentX;    
-    Analytics::ScalarRollingWindow<double> m_rollingWindow;
+    Analytics::ScalarRollingWindow<double> m_mrollingWindow;
+    Analytics::ScalarRollingWindow<double> m_srollingWindow;
     double m_MomThreshold;
     double m_SentiThreshold;
+    double m_Last;
     int m_nOrdersOutstanding;
     bool m_DebugOn;
     SMAmap sma_data;

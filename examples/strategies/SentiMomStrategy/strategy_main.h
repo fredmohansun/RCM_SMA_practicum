@@ -57,6 +57,7 @@ struct StrategyLogicState {
 
     bool marketActive;
     double unitDesired;
+    double stop_loss;
     int level;
 };
 

@@ -154,6 +154,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     }
     m_bars[&msg.instrument()] = msg.bar();
     m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
+    m_mpState.stop_or_not=false;
     if(m_Last < 0.0){
         m_Last = m_bars[m_instrumentX].close();
         return;
@@ -214,9 +215,14 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 }
 
  void SentiMom::OnTrade(const TradeDataEventMsg& msg){
-	 if(msg.trade().price() < m_mpState.stop)
-		 m_mpState.unitDesired=0;
+	 if(msg.trade().price() < m_mpState.stop&&m_mpState.stop_or_not=false)
+	 {
+		 if(msg.scheduled_event_name() == "End_Day_Adjustment")
+		m_mpState.unitDesired=0;
                 AjustPortfolio();
+	        m_mpState.stop_or_not=true;
+	   return
+	 }
  }
 			 
 

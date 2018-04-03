@@ -74,6 +74,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     getline(input_file, line);//Get metadata
     while(!input_file.eof()){
         getline(input_file, line);
+	if(line[0]=='e') break;
         PSentimentEventMsg SMA_entry = PSentimentEventMsg(line);
         TimeType SMA_time = TimeHelper(line);
         sma_data.insert(std::pair<TimeType, PSentimentEventMsg>(SMA_time, SMA_entry));
@@ -168,7 +169,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level += 2;
             else
                 m_spState.level = L_count-1;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -178,7 +179,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level++;
             else
                 m_spState.level = L_count-1;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -191,7 +192,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level -= 2;
             else
                 m_spState.level = 0;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -201,7 +202,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level--;
             else
                 m_spState.level = 0;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity)/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;

@@ -67,6 +67,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_nOrdersOutstanding(0),
     m_DebugOn(true),
     m_Last(-1.0),
+    m_stoplossthreshold(0.985);
     sma_data()
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
@@ -152,7 +153,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
         logger().LogToClient(LOGLEVEL_INFO, str2.str().c_str());
     }
     m_bars[&msg.instrument()] = msg.bar();
-
+    m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
     if(m_Last < 0.0){
         m_Last = m_bars[m_instrumentX].close();
         return;
@@ -209,7 +210,15 @@ void SentiMom::OnBar(const BarEventMsg& msg)
         }
         else    return; //No adjusting intra day if not confident enough
     }
+	
 }
+
+ void SentiMom::OnTrade(const TradeDataEventMsg& msg){
+	 if(msg.trade().price() < m_mpState.stop)
+		 m_mpState.unitDesired=0;
+                AjustPortfolio();
+ }
+			 
 
 void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
     if(msg.scheduled_event_name() == "End_Day_Adjustment"){

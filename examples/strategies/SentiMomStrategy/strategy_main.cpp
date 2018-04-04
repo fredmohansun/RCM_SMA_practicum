@@ -67,7 +67,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_nOrdersOutstanding(0),
     m_DebugOn(true),
     m_Last(-1.0),
-    m_stoplossthreshold(0.985);
+    m_stoplossthreshold(0.985),
     sma_data()
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
@@ -130,10 +130,6 @@ void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, D
     eventRegister->RegisterForRecurringScheduledEvents("End_Day_Adjustment", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));
 }
 
-void SentiMom::OnTrade(const TradeDataEventMsg& msg)
-{
-}
-
 void SentiMom::OnTopQuote(const QuoteEventMsg& msg)
 {
 }
@@ -154,7 +150,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     }
     m_bars[&msg.instrument()] = msg.bar();
     m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
-    m_mpState.stop_or_not=false;
+    m_spState.stop_or_not=false;
     if(m_Last < 0.0){
         m_Last = m_bars[m_instrumentX].close();
         return;
@@ -215,13 +211,18 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 }
 
  void SentiMom::OnTrade(const TradeDataEventMsg& msg){
-	 if(msg.trade().price() < m_mpState.stop&&m_mpState.stop_or_not==false)
+	 if((msg.trade().price() < m_spState.stop_loss)&&m_spState.stop_or_not==false)
 	 {
-		 if(msg.scheduled_event_name() == "End_Day_Adjustment")
-		m_mpState.unitDesired=0;
-                AjustPortfolio();
-	        m_mpState.stop_or_not=true;
-	   return
+	    if (m_DebugOn) {
+        	ostringstream str;
+        	str << "Stoping loss...";
+        	logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+	    }
+		m_spState.unitDesired=0;
+		m_spState.level=0;
+                AdjustPortfolio();
+	        m_spState.stop_or_not=true;
+	   	return;
 	 }
  }
 			 

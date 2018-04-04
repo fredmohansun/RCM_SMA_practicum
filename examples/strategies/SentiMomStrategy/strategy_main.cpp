@@ -215,7 +215,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 }
 
  void SentiMom::OnTrade(const TradeDataEventMsg& msg){
-	 if(msg.trade().price() < m_mpState.stop&&m_mpState.stop_or_not=false)
+	 if(msg.trade().price() < m_mpState.stop&&m_mpState.stop_or_not==false)
 	 {
 		 if(msg.scheduled_event_name() == "End_Day_Adjustment")
 		m_mpState.unitDesired=0;

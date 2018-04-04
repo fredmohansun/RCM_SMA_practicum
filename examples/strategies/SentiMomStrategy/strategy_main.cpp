@@ -60,8 +60,8 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_spState(),
     m_bars(),
     m_instrumentX(NULL),
-    m_srollingWindow(168),
-    m_mrollingWindow(168),
+    m_srollingWindow(7*24*4),
+    m_mrollingWindow(7*24*4),
     m_SentiThreshold(0.5),
     m_MomThreshold(0.5),
     m_nOrdersOutstanding(0),
@@ -124,7 +124,7 @@ void SentiMom::DefineStrategyGraphs()
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
 {   
     for (SymbolSetConstIter it = symbols_begin(); it != symbols_end(); ++it) {
-        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60 * 60, 2.0, ConvertLocalToUTC(TimeType(currDate))+ boost::posix_time::minutes(10));    
+        EventInstrumentPair retVal = eventRegister->RegisterForBars(*it, BAR_TYPE_TIME, 60 * 15, 2.0, ConvertLocalToUTC(TimeType(currDate))+ boost::posix_time::minutes(10));    
         m_instrumentX = retVal.second;
     }
     eventRegister->RegisterForRecurringScheduledEvents("End_Day_Adjustment", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));

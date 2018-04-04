@@ -198,7 +198,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             return;
         }
         else if(this_sma.s()>m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){
-            if(m_spState.level - 1 < L_count)
+            if(m_spState.level - 1 >=0)
                 m_spState.level--;
             else
                 m_spState.level = 0;

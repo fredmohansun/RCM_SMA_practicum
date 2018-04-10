@@ -68,6 +68,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_DebugOn(true),
     m_Last(-1.0),
     m_stoplossthreshold(0.985),
+    m_nstoploss(0),
     sma_data()
 {
     ifstream input_file("BTC.X.txt", std::ifstream::in);
@@ -163,12 +164,19 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
 
     if(this_return > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
+	if(m_spState.level == 0){
+            m_spState.level = 2;
+	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            AdjustPortfolio();
+            return;
+	}
         if(this_sma.s()>m_srollingWindow.Mean() + 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
             if(m_spState.level + 2 < L_count)
                 m_spState.level += 2;
             else
                 m_spState.level = L_count-1;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -178,7 +186,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level++;
             else
                 m_spState.level = L_count-1;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -191,7 +199,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level -= 2;
             else
                 m_spState.level = 0;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -201,7 +209,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
                 m_spState.level--;
             else
                 m_spState.level = 0;
-            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
+            m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
@@ -219,7 +227,7 @@ void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
         return;
     }
 	if(msg.scheduled_event_name() == "Stop_Loss_Adjustment"){
-		m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close())
+		m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
 		
         return;
     }
@@ -229,7 +237,7 @@ void SentiMom::OnTrade(const TradeDataEventMsg& msg){
 	 {
 	    if (m_DebugOn) {
         	ostringstream str;
-        	str << "Stoping loss...";
+        	str <<"The No."<<++m_nstoploss<<"'s Stoping loss...";
         	logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
 	    }
 		m_spState.unitDesired=0;
@@ -240,14 +248,6 @@ void SentiMom::OnTrade(const TradeDataEventMsg& msg){
 	 }
  }
 			 
-
-/*void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
-    if(msg.scheduled_event_name() == "End_Day_Adjustment"){
-        // AdjustPortfolio();
-        return;
-    }
-}*/
-
 void SentiMom::AdjustPortfolio()
 {
     // wait until orders are filled before we send out more orders

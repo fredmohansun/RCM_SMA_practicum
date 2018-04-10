@@ -179,6 +179,7 @@ private:
     double m_Last;
     double m_stoplossthreshold;
     int m_nOrdersOutstanding;
+    int m_nstoploss;
     bool m_DebugOn;
     SMAmap sma_data;
 };

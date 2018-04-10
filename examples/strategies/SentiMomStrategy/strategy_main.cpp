@@ -128,6 +128,7 @@ void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, D
         m_instrumentX = retVal.second;
     }
     eventRegister->RegisterForRecurringScheduledEvents("End_Day_Adjustment", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::hours(24));
+    eventRegister->RegisterForRecurringScheduledEvents("Stop_Loss_Adjustment", ConvertLocalToUTC(TimeType(currDate)), NULL_TIME_TYPE, boost::posix_time::minutes(1));
 }
 
 void SentiMom::OnTopQuote(const QuoteEventMsg& msg)
@@ -210,7 +211,20 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 	
 }
 
- void SentiMom::OnTrade(const TradeDataEventMsg& msg){
+void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
+    if(msg.scheduled_event_name() == "End_Day_Adjustment"){
+            //m_spState.level=3;
+	    // m_spState.unitDesired=(Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close();
+	    // AdjustPortfolio();
+        return;
+    }
+	if(msg.scheduled_event_name() == "Stop_Loss_Adjustment"){
+		m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close())
+		
+        return;
+    }
+}
+void SentiMom::OnTrade(const TradeDataEventMsg& msg){
 	 if((msg.trade().price() < m_spState.stop_loss)&&m_spState.stop_or_not==false)
 	 {
 	    if (m_DebugOn) {
@@ -227,12 +241,12 @@ void SentiMom::OnBar(const BarEventMsg& msg)
  }
 			 
 
-void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
+/*void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
     if(msg.scheduled_event_name() == "End_Day_Adjustment"){
         // AdjustPortfolio();
         return;
     }
-}
+}*/
 
 void SentiMom::AdjustPortfolio()
 {

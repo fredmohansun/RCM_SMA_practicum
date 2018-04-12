@@ -60,8 +60,8 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_spState(),
     m_bars(),
     m_instrumentX(NULL),
-    m_srollingWindow(7*24*4),
-    m_mrollingWindow(7*24*4),
+    m_srollingWindow(7*24),
+    m_mrollingWindow(7*24),
     m_SentiThreshold(0.5),
     m_MomThreshold(0.5),
     m_nOrdersOutstanding(0),
@@ -69,7 +69,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_stoplossthreshold(0.985),
     sma_data()
 {
-    ifstream input_file("BTC.X.txt", std::ifstream::in);
+    ifstream input_file("ETH.X.txt", std::ifstream::in);
     std::string line;
     getline(input_file, line);//Get metadata
     while(!input_file.eof()){
@@ -118,6 +118,7 @@ void SentiMom::DefineStrategyGraphs()
 {
     // graphs().series().add("Mean"); 
     graphs().series().add("Level");
+    graphs().series().add("Position");
 }
 
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
@@ -141,77 +142,124 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     PSentimentEventMsg this_sma = data_iterator.first->second;
 
     if (m_DebugOn) {
-        ostringstream str;
-        str << msg.instrument().symbol() << ": "<< msg.bar();
-        logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-        ostringstream str2;
-        str2<<"At Bar time: "<<current_time<<", received: "<<data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
-        logger().LogToClient(LOGLEVEL_DEBUG, str2.str().c_str());
+        //ostringstream str;
+        //str << msg.instrument().symbol() << ": "<< msg.bar();
+        //logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
+        //ostringstream str2;
+        //str2<<"At Bar time: "<<current_time<<", received: "<<data_iterator.first->first<<"'s ETH's S: "<< data_iterator.first->second.s();
+        //logger().LogToClient(LOGLEVEL_DEBUG, str2.str().c_str());
     }
     m_bars[&msg.instrument()] = msg.bar();
     m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
     m_spState.stop_or_not=false;
     if(m_spState.last < 0.0){
         m_spState.last = m_bars[m_instrumentX].close();
-        return;
+	ostringstream str;
+	str << "At Bar Time" <<current_time<<" received first close:" << m_spState.last<< m_bars[m_instrumentX].close();
+        logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+	return;
+	std::cout<<"Something goes wrong here...\n";
     }
 
-    double this_return = (m_bars[m_instrumentX].close()-m_spState.last)/m_spState.last;
-    m_spState.last = m_bars[m_instrumentX].close();
+    double this_return = log(m_bars[m_instrumentX].close())-log(m_spState.last);
     m_mrollingWindow.push_back(this_return);
     m_srollingWindow.push_back(this_sma.s());
+    m_spState.last = m_bars[m_instrumentX].close();
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
-
+    if (m_DebugOn){
+        ostringstream str;
+	//str << "At Bar time: "<<current_time<<" pushed return: "<<this_return<<" with this close: "<<m_bars[m_instrumentX].close()<<" and last close: "<<m_spState.last<<std::endl<< msg.bar();
+	str<<"At Bar time: "<<current_time<<", This return is: "<<this_return<<", Moving Average is: "<<m_mrollingWindow.Mean()<< ", std is :"<<m_mrollingWindow.StdDev() <<", upper: "<<m_mrollingWindow.Mean() + m_MomThreshold*m_mrollingWindow.StdDev()<<", Lower: "<<m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev();
+	logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+    }
+    if (m_DebugOn){
+	ostringstream str;
+	str<<"At Bar time"<<current_time<<", This s is:" <<this_sma.s()<<", Moving Average is: "<<m_srollingWindow.Mean()<<", std is :"<<m_srollingWindow.StdDev()<<", 1x upper: "<<m_srollingWindow.Mean() + m_SentiThreshold * m_srollingWindow.StdDev()<<", 1x lower:"<< m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()<<", 2x upper:"<<m_srollingWindow.Mean() + 2 * m_SentiThreshold * m_srollingWindow.StdDev()<<", 2x lower:"<<m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev();
+	logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+    }
     if(this_return > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
-	if(m_spState.level == 0){
-            m_spState.level = 2;
-	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
-            AdjustPortfolio();
-            return;
-	}
+	if(m_spState.level == L_count-1)	return;
+	//if(m_spState.level == 0){
+	    //ostringstream str;
+	    //str<<"changed from level "<<m_spState.level;
+            //m_spState.level = 2;
+	    //str<<" to level" <<m_spState.level;
+	    //m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+	    //str<<", now desire "<<Level[m_spState.level]<<" of $"<<portfolio().account_equity()<<" or "<< m_spState.unitDesired <<" units";
+	    //logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+            //graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            //AdjustPortfolio();
+            //return;
+	//}
         if(this_sma.s()>m_srollingWindow.Mean() + 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
-            if(m_spState.level + 2 < L_count)
+            ostringstream str;
+	    str<<"changed from level "<<m_spState.level;
+	    if(m_spState.level + 2 < L_count)
                 m_spState.level += 2;
             else
                 m_spState.level = L_count-1;
+	    str<<"to level " <<m_spState.level;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+            str<<", now desire "<<Level[m_spState.level]<<" of $"<<portfolio().account_equity()<<" or "<< m_spState.unitDesired <<" units";
+	    logger().LogToClient(LOGLEVEL_INFO, str.str().c_str()); 
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
+	    graphs().series()["Position"]->push_back(msg.event_time(), portfolio().position(m_instrumentX));
             return;
         }
         else if(this_sma.s()>m_srollingWindow.Mean() + m_SentiThreshold * m_srollingWindow.StdDev()){
+	    ostringstream str;
+	    str<<"changed from level " <<m_spState.level;
             if(m_spState.level + 1 < L_count)
                 m_spState.level++;
             else
                 m_spState.level = L_count-1;
+	    str<<" to level " << m_spState.level;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+            str<<", now desire "<<Level[m_spState.level]<<" of $"<<portfolio().account_equity()<<" or "<< m_spState.unitDesired <<" units";
+	    logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+            
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
-            return;
+       	    graphs().series()["Position"]->push_back(msg.event_time(), portfolio().position(m_instrumentX));
+       	    return;
         }
         else    return; //No adjusting intra day if not confident enough
     }
     else if (this_return < m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev()){
-        if(this_sma.s()>m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
+	if(m_spState.level == 0) 	return;
+        if(this_sma.s()<m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
+	    ostringstream str;
+	    str<<"changed from level " <<m_spState.level;
             if(m_spState.level - 2 >= 0)
                 m_spState.level -= 2;
             else
                 m_spState.level = 0;
+	    str<<" to level "<<m_spState.level;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            str<<", now desire "<<Level[m_spState.level]<<" of $"<<portfolio().account_equity()<<" or "<< m_spState.unitDesired <<" units";
+	    logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
+            
+	    graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
-            return;
+   	    graphs().series()["Position"]->push_back(msg.event_time(), portfolio().position(m_instrumentX));
+	    return;
         }
-        else if(this_sma.s()>m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){
+        else if(this_sma.s()<m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){
+	    ostringstream str;
+	    str<<"changed from level "<<m_spState.level;
             if(m_spState.level - 1 >=0)
                 m_spState.level--;
             else
                 m_spState.level = 0;
+	    str<<" to level " <<m_spState.level;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+	     str<<", now desire "<<Level[m_spState.level]<<" of $"<<portfolio().account_equity()<<" or "<< m_spState.unitDesired <<" units";
+	    logger().LogToClient(LOGLEVEL_INFO, str.str().c_str());
             graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
-            return;
+            graphs().series()["Position"]->push_back(msg.event_time(), portfolio().position(m_instrumentX));
+	    return;
         }
         else    return; //No adjusting intra day if not confident enough
     }
@@ -270,10 +318,9 @@ void SentiMom::AdjustPortfolio()
 void SentiMom::SendBuyOrder(const Instrument* instrument, int unitsNeeded)
 {
     if (m_DebugOn) {
-        std::stringstream ss;
-        ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->top_quote().ask() << " and quantity " << unitsNeeded;   
-        logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
-	std::cout<<ss.str()<<'\n';
+        //std::stringstream ss;
+        //ss << "Sending buy order for " << instrument->symbol() << " at price " << instrument->last_trade().price() << " and quantity " << unitsNeeded;   
+        //logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
     }
 
     OrderParams params(*instrument, 
@@ -290,10 +337,9 @@ void SentiMom::SendBuyOrder(const Instrument* instrument, int unitsNeeded)
 void SentiMom::SendSellOrder(const Instrument* instrument, int unitsNeeded)
 {
     if(m_DebugOn) {
-        std::stringstream ss;
-        ss << "Sending sell order for " << instrument->symbol() << " at price " << instrument->top_quote().bid() << " and quantity " << unitsNeeded;   
-        logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
-	std:cout<<ss.str()<<'\n';
+        //std::stringstream ss;
+        //ss << "Sending sell order for " << instrument->symbol() << " at price " << instrument->last_trade().price() << " and quantity " << unitsNeeded;   
+        //logger().LogToClient(LOGLEVEL_DEBUG, ss.str());
     }
 
     OrderParams params(*instrument, 

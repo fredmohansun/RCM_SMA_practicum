@@ -46,6 +46,8 @@ const double Level[5] = {0.0, 0.25, 0.50, 0.75, 1.0};
 const int L_count = 5;
 
 typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
+ofstream output_file("result.csv", std::fstream::out);
+ifstream input_file("BTC.X.txt", std::fstream::in);
 
 TimeType TimeHelper(std::string line){
     std::stringstream split_helper(line);
@@ -69,7 +71,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_stoplossthreshold(0.985),
     sma_data()
 {
-    ifstream input_file("BTC.X.txt", std::ifstream::in);
+    output_file<<"Date,Equity,Close\n";
     std::string line;
     getline(input_file, line);//Get metadata
     while(!input_file.eof()){
@@ -120,7 +122,7 @@ void SentiMom::DefineStrategyParams()
 void SentiMom::DefineStrategyGraphs()
 {
     // graphs().series().add("Mean"); 
-    graphs().series().add("Level");
+    // graphs().series().add("Level");
 }
 
 void SentiMom::RegisterForStrategyEvents(StrategyEventRegister* eventRegister, DateType currDate)
@@ -142,14 +144,11 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     TimeType current_time = msg.bar_time();
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
     PSentimentEventMsg this_sma = data_iterator.first->second;
-
+    output_file<<current_time<<','<<portfolio.account_equity()<<','<<m_bars[m_instrumentX].close()<<'\n';
     if (m_DebugOn) {/*
         ostringstream str;
         str << msg.instrument().symbol() << ": "<< msg.bar();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-        ostringstream str2;
-        str2<<"At Bar time: "<<current_time<<", received: "<<data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
-        logger().LogToClient(LOGLEVEL_DEBUG, str2.str().c_str());
 	*/
     }
     m_bars[&msg.instrument()] = msg.bar();
@@ -165,7 +164,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 	if(m_spState.level == 0){
             m_spState.level = 2;
 	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
+            //graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
 	}
@@ -175,7 +174,6 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             else
                 m_spState.level = L_count-1;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
         }
@@ -185,7 +183,6 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             else
                 m_spState.level = L_count-1;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
         }
@@ -198,7 +195,6 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             else
                 m_spState.level = 0;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
         }
@@ -208,7 +204,6 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             else
                 m_spState.level = 0;
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
-            graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
             AdjustPortfolio();
             return;
         }
@@ -252,16 +247,26 @@ void SentiMom::OnTrade(const TradeDataEventMsg& msg){
 void SentiMom::AdjustPortfolio()
 {
     // wait until orders are filled before we send out more orders
+    /*
     if (orders().num_working_orders() > 0) {
         return;
     }
+    */
     double temp = m_spState.unitDesired - portfolio().position(m_instrumentX); 
-
-    int unitsNeeded = (temp - (temp/1) >=0.5) ? (temp/1+1) : (temp / 1);
-
+    int unitsNeeded;
+    while(abs(temp)>2147483647){
+        if (temp > 0){ 
+            SendBuyOrder(m_instrumentX, 2000000000);
+	    temp -= 2000000000;
+	}
+        else if (temp < 0){
+            SendSellOrder(m_instrumentX, 2000000000);
+	    temp += 2000000000;
+	}
+    }
+    unitsNeeded = (temp - (temp/1) >=0.5) ? (temp/1+1) : (temp / 1);
     if (unitsNeeded > 0) 
         SendBuyOrder(m_instrumentX, unitsNeeded);
-
     else if (unitsNeeded < 0) 
         SendSellOrder(m_instrumentX, -unitsNeeded);
 }

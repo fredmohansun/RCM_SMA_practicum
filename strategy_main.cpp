@@ -47,7 +47,6 @@ const int L_count = 5;
 
 typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 ofstream output_file("result.csv", std::fstream::out);
-ifstream input_file("BTC.X.txt", std::fstream::in);
 
 TimeType TimeHelper(std::string line){
     std::stringstream split_helper(line);
@@ -72,6 +71,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     sma_data()
 {
     output_file<<"Date,Equity,Close\n";
+    ifstream input_file("BTC.X.txt", std::fstream::in);
     std::string line;
     getline(input_file, line);//Get metadata
     while(!input_file.eof()){
@@ -144,12 +144,11 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     TimeType current_time = msg.bar_time();
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
     PSentimentEventMsg this_sma = data_iterator.first->second;
-    output_file<<current_time<<','<<portfolio.account_equity()<<','<<m_bars[m_instrumentX].close()<<'\n';
-    if (m_DebugOn) {/*
+    output_file<<current_time<<','<<portfolio().account_equity()<<','<<m_bars[m_instrumentX].close()<<'\n';
+    if (m_DebugOn) {
         ostringstream str;
-        str << msg.instrument().symbol() << ": "<< msg.bar();
+        str <<"At bar_time:"<<current_time<< "received BTC's S: "<<this_sma.s();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
-	*/
     }
     m_bars[&msg.instrument()] = msg.bar();
     m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
@@ -160,7 +159,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     m_srollingWindow.push_back(this_sma.s());
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
 
-    if(this_score > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
+    if(this_close > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
 	if(m_spState.level == 0){
             m_spState.level = 2;
 	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
@@ -247,13 +246,11 @@ void SentiMom::OnTrade(const TradeDataEventMsg& msg){
 void SentiMom::AdjustPortfolio()
 {
     // wait until orders are filled before we send out more orders
-    /*
-    if (orders().num_working_orders() > 0) {
+    /*if (orders().num_working_orders() > 0) {
         return;
-    }
-    */
+    }*/
     double temp = m_spState.unitDesired - portfolio().position(m_instrumentX); 
-    int unitsNeeded;
+    int unitsNeeded = (temp - (temp/1) >=0.5) ? (temp/1+1) : (temp / 1);
     while(abs(temp)>2147483647){
         if (temp > 0){ 
             SendBuyOrder(m_instrumentX, 2000000000);

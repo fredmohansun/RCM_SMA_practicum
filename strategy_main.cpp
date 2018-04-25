@@ -160,7 +160,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
 
     if(this_close > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
-	if(m_spState.level == 0){
+	/*if(m_spState.level == 0){
             m_spState.level = 2;
 	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             //graphs().series()["Level"]->push_back(msg.event_time(), m_spState.level);
@@ -176,7 +176,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             AdjustPortfolio();
             return;
         }
-        else if(this_sma.s()>m_srollingWindow.Mean() + m_SentiThreshold * m_srollingWindow.StdDev()){
+        else if(this_sma.s()>m_srollingWindow.Mean() + m_SentiThreshold * m_srollingWindow.StdDev()){*/
             if(m_spState.level + 1 < L_count)
                 m_spState.level++;
             else
@@ -184,11 +184,11 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             AdjustPortfolio();
             return;
-        }
-        else    return; //No adjusting intra day if not confident enough
+        //}
+        //else    return; //No adjusting intra day if not confident enough
     }
     else if (this_close < m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev()){
-        if(this_sma.s()>m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
+        /*if(this_sma.s()>m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
             if(m_spState.level - 2 >= 0)
                 m_spState.level -= 2;
             else
@@ -197,7 +197,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             AdjustPortfolio();
             return;
         }
-        else if(this_sma.s()>m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){
+        else if(this_sma.s()>m_srollingWindow.Mean() - m_SentiThreshold * m_srollingWindow.StdDev()){*/
             if(m_spState.level - 1 >=0)
                 m_spState.level--;
             else
@@ -205,8 +205,8 @@ void SentiMom::OnBar(const BarEventMsg& msg)
             m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
             AdjustPortfolio();
             return;
-        }
-        else    return; //No adjusting intra day if not confident enough
+        //}
+        //else    return; //No adjusting intra day if not confident enough
     }
 	
 }

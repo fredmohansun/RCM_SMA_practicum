@@ -101,6 +101,7 @@ void SentiMom::OnResetStrategyState()
     m_spState.stop_loss = 0.0;
     m_spState.stop_or_not = false;
     m_spState.nstoploss = 0;
+    m_spState.wkndbuffer = 0;
 
     m_srollingWindow.clear();
     m_mrollingWindow.clear();
@@ -158,6 +159,20 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     m_mrollingWindow.push_back(this_close);
     m_srollingWindow.push_back(this_sma.s());
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
+
+    if((current_time.date().day_of_week() == 6)&&(current_time.time_of_day() == TimeType(boost::posix_time::time_from_string("2002-01-20 04:55:00.000")).time_of_day())){
+    	m_spState.wkndbuffer = m_spState.level;
+	m_spState.level = 0;
+	m_spState.unitDesired = 0;
+	AdjustPortfolio();
+	return;
+    }
+    if((current_time.date().day_of_week() == 1)&&(current_time.time_of_day() == TimeType(boost::posix_time::time_from_string("2002-01-20 05:10:00.000")).time_of_day())){
+	m_spState.level = m_spState.wkndbuffer;
+	m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+	AdjustPortfolio();
+	return;
+    }
 
     if(this_close > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
 	if(m_spState.level == 0){

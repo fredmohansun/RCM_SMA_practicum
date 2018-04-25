@@ -16,7 +16,7 @@ INCLUDEPATH=../../../includes
 
 INCLUDES=-I/usr/include -I$(INCLUDEPATH)
 LDFLAGS=$(LIBPATH)/libstrategystudio_analytics.a $(LIBPATH)/libstrategystudio.a $(LIBPATH)/libstrategystudio_transport.a $(LIBPATH)/libstrategystudio_marketmodels.a $(LIBPATH)/libstrategystudio_utilities.a $(LIBPATH)/libstrategystudio_flashprotocol.a
-LIBRARY=SentiMomStrategy.so
+LIBRARY=SentiMom_weekendsout.so
 
 SOURCES=strategy_main.cpp
 HEADERS=strategy_main.h

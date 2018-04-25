@@ -96,6 +96,9 @@ void SentiMom::OnResetStrategyState()
     m_spState.marketActive = true;
     m_spState.unitDesired = 0.0;
     m_spState.level = 0;
+    m_spState.stop_loss = 0.0;
+    m_spState.stop_or_not = false;
+    m_spState.nstoploss = 0;
 
     m_srollingWindow.clear();
     m_mrollingWindow.clear();
@@ -140,29 +143,25 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
     PSentimentEventMsg this_sma = data_iterator.first->second;
 
-    if (m_DebugOn) {
+    if (m_DebugOn) {/*
         ostringstream str;
         str << msg.instrument().symbol() << ": "<< msg.bar();
         logger().LogToClient(LOGLEVEL_DEBUG, str.str().c_str());
         ostringstream str2;
         str2<<"At Bar time: "<<current_time<<", received: "<<data_iterator.first->first<<"'s BTC's S: "<< data_iterator.first->second.s();
         logger().LogToClient(LOGLEVEL_DEBUG, str2.str().c_str());
+	*/
     }
     m_bars[&msg.instrument()] = msg.bar();
     m_spState.stop_loss=m_stoplossthreshold*m_bars[m_instrumentX].close();
     m_spState.stop_or_not=false;
-    if(m_spState.last < 0.0){
-        m_spState.last = m_bars[m_instrumentX].close();
-        return;
-    }
 
-    double this_return = (m_bars[m_instrumentX].close()-m_spState.last)/m_spState.last;
-    m_spState.last = m_bars[m_instrumentX].close();
-    m_mrollingWindow.push_back(this_return);
+    double this_close = m_bars[m_instrumentX].close();
+    m_mrollingWindow.push_back(this_close);
     m_srollingWindow.push_back(this_sma.s());
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
 
-    if(this_return > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
+    if(this_score > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
 	if(m_spState.level == 0){
             m_spState.level = 2;
 	    m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
@@ -192,7 +191,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
         }
         else    return; //No adjusting intra day if not confident enough
     }
-    else if (this_return < m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev()){
+    else if (this_close < m_mrollingWindow.Mean() - m_MomThreshold * m_mrollingWindow.StdDev()){
         if(this_sma.s()>m_srollingWindow.Mean() - 2 * m_SentiThreshold * m_srollingWindow.StdDev()){
             if(m_spState.level - 2 >= 0)
                 m_spState.level -= 2;

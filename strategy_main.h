@@ -48,14 +48,13 @@ typedef std::map<TimeType, PSentimentEventMsg> SMAmap;
 
 struct StrategyLogicState {
 
-    StrategyLogicState(): marketActive(0), unitDesired(0.0), level(0),stop_loss(0.0),stop_or_not(false), last(-1.0), nstoploss(0){}
+    StrategyLogicState(): marketActive(0), unitDesired(0.0), level(0),stop_loss(0.0),stop_or_not(false), nstoploss(0){}
 
-    StrategyLogicState(double proportionDesired): 
-        marketActive(0), unitDesired(unitDesired), level(0),stop_loss(0.0),stop_or_not(false),last(-1.0), nstoploss(0)
+    StrategyLogicState(double proportionDesired):
+        marketActive(0), unitDesired(unitDesired), level(0),stop_loss(0.0),stop_or_not(false), nstoploss(0)
     {
     }
     bool marketActive;
-    double last;
     int level;
     double unitDesired;
     double stop_loss;
@@ -65,7 +64,7 @@ struct StrategyLogicState {
 
 class SentiMom : public Strategy {
 public:
-    typedef std::map<const Instrument*, Bar> Bars; 
+    typedef std::map<const Instrument*, Bar> Bars;
     typedef Bars::iterator BarsIter;
     typedef Bars::const_iterator BarsConstIter;
 

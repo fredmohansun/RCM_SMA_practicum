@@ -2,7 +2,7 @@
 ifdef INTEL
     CC=icc
 else
-    CC=g++-4.8
+    CC=g++
 endif
 
 ifdef DEBUG

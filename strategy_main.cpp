@@ -70,7 +70,7 @@ SentiMom::SentiMom(StrategyID strategyID, const std::string& strategyName, const
     m_stoplossthreshold(0.985),
     sma_data()
 {
-    output_file<<"Date,Equity,Close\n";
+    output_file<<"Date,Equity,Close,Level\n";
     ifstream input_file("BTC.X.txt", std::fstream::in);
     std::string line;
     getline(input_file, line);//Get metadata
@@ -144,7 +144,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
     TimeType current_time = msg.bar_time();
     std::pair<SMAmap::iterator, SMAmap::iterator> data_iterator = sma_data.equal_range(current_time);
     PSentimentEventMsg this_sma = data_iterator.first->second;
-    output_file<<current_time<<','<<portfolio().account_equity()<<','<<m_bars[m_instrumentX].close()<<'\n';
+    output_file<<current_time<<','<<portfolio().account_equity()<<','<<m_bars[m_instrumentX].close()<<','<<m_spState.level<<'\n';
     if (m_DebugOn) {
         ostringstream str;
         str <<"At bar_time:"<<current_time<< "received BTC's S: "<<this_sma.s();

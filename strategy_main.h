@@ -186,7 +186,7 @@ extern "C" {
 
     _STRATEGY_EXPORTS const char* GetType()
     {
-        return "SentiMom";
+        return "SentiMom_Robust_SMA";
     }
 
     _STRATEGY_EXPORTS IStrategy* CreateStrategy(const char* strategyType, 

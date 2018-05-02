@@ -156,9 +156,27 @@ void SentiMom::OnBar(const BarEventMsg& msg)
 
     double this_close = m_bars[m_instrumentX].close();
     m_mrollingWindow.push_back(this_close);
-    m_srollingWindow.push_back(this_sma.s());
+    m_srollingWindow.push_back(this_sma.s_vscore());
     if (!m_srollingWindow.full()||!m_mrollingWindow.full())    return;
-
+    if((this_sma.s_vscore() > m_srollingWindow.Mean()+0.5 * m_srollingWindow.StdDev()) && (this_sma.s_score()>0.5)){
+        m_spState.level = 4;
+	m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+        AdjustPortfolio();
+        return;
+    }
+    if((this_sma.s_vscore() > m_srollingWindow.Mean()+0.5 * m_srollingWindow.StdDev()) && (this_sma.s_score()<=0.5) && (this_sma.s_score()>0)){
+	m_spState.level = 2;
+	m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+        AdjustPortfolio();
+        return;
+    }
+    if((this_sma.s_vscore() < m_srollingWindow.Mean()) || (this_sma.s_score()<0)){
+	m_spState.level = 0;
+	m_spState.unitDesired = (Level[m_spState.level] * portfolio().account_equity())/m_bars[m_instrumentX].close()*10000;
+        AdjustPortfolio();
+        return;
+    }
+    /*
     if(this_close > m_mrollingWindow.Mean() + m_MomThreshold * m_mrollingWindow.StdDev()){
 	if(m_spState.level == 0){
             m_spState.level = 2;
@@ -208,7 +226,7 @@ void SentiMom::OnBar(const BarEventMsg& msg)
         }
         else    return; //No adjusting intra day if not confident enough
     }
-	
+*/	
 }
 
 void SentiMom::OnScheduledEvent(const ScheduledEventMsg& msg){
